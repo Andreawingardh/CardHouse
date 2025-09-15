@@ -1,7 +1,20 @@
 import style from "./ColorChoiceButton.module.css";
 
-type ColorChoiceButtonProps = {};
+type ButtonColor = "paleBlue" | "blue" | "green" | "orange" | "red" | "metal";
 
-export default function ColorChoiceButton({}: ColorChoiceButtonProps) {
-  return <button className={style.button}></button>;
+type ColorChoiceButtonProps = {
+  color?: ButtonColor;
+  onClick?: () => void; // Future click function
+};
+
+export default function ColorChoiceButton({
+  color = "paleBlue",
+  onClick = () => {},
+}: ColorChoiceButtonProps) {
+  return (
+    <button
+      className={`${style.button} ${style[color]}`}
+      onClick={onClick}
+    ></button>
+  );
 }
