@@ -29,14 +29,13 @@ export default function InputField({
     setErrorMessage("");
 
     // Auto-format card numbers
-    if (pattern === "\\d{16,16}") {
+    if (pattern === Patterns.cardNumber) {
+      // Changed from "\\d{16,16}" to Patterns.cardNumber
       const digitsOnly = value.replace(/\D/g, "");
-
       if (digitsOnly.length > 16) {
         setErrorMessage("Card number cannot exceed 16 digits");
         return;
       }
-
       // Format with spaces every 4 digits
       value = digitsOnly.replace(/(\d{4})(?=\d)/g, "$1 ");
     } else {
@@ -45,15 +44,14 @@ export default function InputField({
         setErrorMessage(`Maximum ${maxLength} characters allowed`);
         return;
       }
-
       if (!isValidInput(value, pattern)) {
         setErrorMessage(getErrorMessage(pattern));
         return;
       }
     }
-
     setInputValue(value);
   };
+    
   const isValidInput = (value: string, pattern: string): boolean => {
     if (value === "") return true;
 
@@ -85,7 +83,6 @@ export default function InputField({
         name={label}
         className={styles.inputField}
         type="text"
-        pattern={pattern}
         value={inputValue}
         onChange={handleInputChange}
       ></input>

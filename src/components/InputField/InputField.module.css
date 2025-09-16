@@ -32,12 +32,3 @@
   font-weight: 510;
   line-height: normal;
 }
-
-input:valid {
-  background-color: #121212;
-}
-
-input:invalid {
-  background-color: lightpink;
-}
-
