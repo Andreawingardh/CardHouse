@@ -1,3 +1,22 @@
-h1 {
-    color: var(--font-color)
+.heroHeaderContainer {
+  display: flex;
+  max-width: 40.75rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.125rem;
+  text-align: center;
+}
+
+.heroHeaderContainer h1 {
+  color: var(--font-color-light);
+  font-family: "Sf Pro", Arial, Helvetica, sans-serif;
+  font-size: var(--font-size-h1);
+  font-weight: 510;
+}
+
+.heroHeaderContainer p {
+  color: var(--font-color-grey);
+  font-family: "Sf Pro", Arial, Helvetica, sans-serif;
+  font-size: var(--font-size-l);
+  font-weight: 510;
 }
