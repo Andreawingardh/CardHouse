@@ -5,6 +5,8 @@ export function CardModel() {
   return (
     <div className={styles.cardModel}>
       <CardModelScene />
+      <h3>Preview</h3>
+      <p>Customize your card</p>
     </div>
   );
 }

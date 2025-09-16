@@ -1,0 +1,25 @@
+.cardModel {
+  display: flex;
+  flex-direction: column;
+}
+
+.cardModel h3 {
+  color: var(--font-color-light);
+  text-align: center;
+  font-family: "SF Pro";
+  font-size: var(font-size-l);
+  font-style: normal;
+  font-weight: 590;
+  line-height: normal;
+  margin-top: 4rem;
+}
+
+.cardModel p {
+  color: var(--font-color-grey);
+  text-align: center;
+  font-family: "SF Pro";
+  font-size: var(font-size-s);
+  font-style: normal;
+  font-weight: 510;
+  line-height: normal;
+}
