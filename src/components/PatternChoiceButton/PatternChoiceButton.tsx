@@ -74,6 +74,7 @@ export default function PatternChoiceButton({
               height="11"
               transform="rotate(45 35.5 5.7)"
               stroke="#737C89"
+              fill="none"
             />
             <rect
               x="10.3"
@@ -82,6 +83,7 @@ export default function PatternChoiceButton({
               height="6.4"
               transform="rotate(24.5 10.3 18.7)"
               stroke="#737C89"
+              fill="none"
             />
             <rect
               x="23.6"
@@ -90,6 +92,7 @@ export default function PatternChoiceButton({
               height="4.1"
               transform="rotate(-20.3 23.6 29.1)"
               stroke="#737C89"
+              fill="none"
             />
             {backgroundGradient}
           </svg>
