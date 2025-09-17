@@ -1,4 +1,4 @@
-import style from "./ColorChoiceButton.module.css";
+import styles from "./ColorChoiceButton.module.css";
 
 type ButtonColor = "paleBlue" | "blue" | "green" | "orange" | "red" | "metal";
 
@@ -13,7 +13,7 @@ export default function ColorChoiceButton({
 }: ColorChoiceButtonProps) {
   return (
     <button
-      className={`${style.button} ${style[color]}`}
+      className={`${styles.button} ${styles[color]}`}
       onClick={onClick}
     ></button>
   );

@@ -1,4 +1,4 @@
-import style from "./PatternChoiceButton.module.css";
+import styles from "./PatternChoiceButton.module.css";
 
 type ButtonShape = "clear" | "squares" | "stripes" | "circles";
 
@@ -34,7 +34,7 @@ export default function PatternChoiceButton({
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 49 39"
-            className={style.icon}
+            className={styles.icon}
           >
             <rect
               x="1"
@@ -55,7 +55,7 @@ export default function PatternChoiceButton({
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 49 39"
-            className={style.icon}
+            className={styles.icon}
           >
             <rect
               x="1"
@@ -103,7 +103,7 @@ export default function PatternChoiceButton({
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 49 39"
-            className={style.icon}
+            className={styles.icon}
           >
             <rect
               x="1"
@@ -127,7 +127,7 @@ export default function PatternChoiceButton({
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 49 39"
-            className={style.icon}
+            className={styles.icon}
           >
             <rect
               x="1"
@@ -156,7 +156,7 @@ export default function PatternChoiceButton({
   };
 
   return (
-    <button className={style.button} onClick={onClick}>
+    <button className={styles.button} onClick={onClick}>
       {renderShape()}
     </button>
   );
