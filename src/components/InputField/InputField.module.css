@@ -1,3 +1,5 @@
+/* Did not add padding to the inputFieldCOntainer to allow for gaps in a flex-box*/
+
 .inputFieldContainer {
   display: flex;
   flex-direction: column;
@@ -12,6 +14,10 @@
   background: #121212;
   width: 24.3125rem;
   height: 2.125rem;
+  display: flex;
+  width: 24.3125rem;
+  padding: 0.875rem 0.8125rem;
+  color: var(--font-color-grey);
 }
 
 .inputFieldContainer label {
