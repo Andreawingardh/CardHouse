@@ -6,7 +6,7 @@ const colors = ["paleBlue", "blue", "green", "orange", "red", "metal"] as const;
 type ButtonColor = (typeof colors)[number];
 
 export default function ColorChoiceButtons() {
-  const [selectedColor, setSelectedColor] = useState<ButtonColor | null>(null);
+  const [selectedColor, setSelectedColor] = useState<ButtonColor>("paleBlue");
 
   return (
     <div className={styles.container}>
