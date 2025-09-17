@@ -1,0 +1,38 @@
+.headerContainer {
+  margin: 28px 0px 28px 0px;
+  height: 31px;
+}
+
+.headerNavContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding: 0px 100px 0px 100px;
+}
+
+.headerLogo {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.headerLogo h3 {
+  font-weight: Semibold;
+}
+
+.headerNav {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.headerNav:hover,
+.headerLogo:hover {
+  cursor: pointer;
+}
+
+.headerBorder {
+  border-bottom: solid gray 1px;
+  width: 100vw;
+}
