@@ -1,25 +1,18 @@
 import { useState } from "react";
 import styles from "./InputField.module.css";
 
-export const Patterns = {
-  name: "\\w{3,25}",
-  cardNumber: "\\d{16,16}",
-} as const;
-
-type Patterns = (typeof Patterns)[keyof typeof Patterns];
-
 type InputFieldProps = {
   text: string;
   label: string;
   maxLength: number;
-  pattern: Patterns;
+  fieldType: "name" | "cardNumber";
 };
 
 export default function InputField({
   label,
   text,
-  pattern,
   maxLength,
+  fieldType,
 }: InputFieldProps) {
   const [inputValue, setInputValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -28,12 +21,16 @@ export default function InputField({
     let value = e.target.value;
     setErrorMessage("");
 
+    if (!isValidInput(value, fieldType)) {
+      setErrorMessage(getErrorMessage(fieldType));
+      return;
+    }
+
     // Auto-format card numbers
-    if (pattern === Patterns.cardNumber) {
-      // Changed from "\\d{16,16}" to Patterns.cardNumber
+    if (fieldType === "cardNumber") {
       const digitsOnly = value.replace(/\D/g, "");
-      if (digitsOnly.length > 16) {
-        setErrorMessage("Card number cannot exceed 16 digits");
+      if (digitsOnly.length > maxLength) {
+        setErrorMessage(`Card number cannot exceed ${maxLength} digits`);
         return;
       }
       // Format with spaces every 4 digits
@@ -44,32 +41,28 @@ export default function InputField({
         setErrorMessage(`Maximum ${maxLength} characters allowed`);
         return;
       }
-      if (!isValidInput(value, pattern)) {
-        setErrorMessage(getErrorMessage(pattern));
-        return;
-      }
     }
     setInputValue(value);
   };
-    
-  const isValidInput = (value: string, pattern: string): boolean => {
+
+  const isValidInput = (value: string, fieldType: string): boolean => {
     if (value === "") return true;
 
-    switch (pattern) {
-      case Patterns.name: // Use Patterns.name instead of string
-        return /^[a-zA-Z\s]*$/.test(value);
-      case Patterns.cardNumber: // Use Patterns.cardNumber instead of string
+    switch (fieldType) {
+      case "name":
+        return /^[a-zA-ZåäöÅÄÖ\s]*$/.test(value);
+      case "cardNumber":
         return /^[0-9\-\s]*$/.test(value);
       default:
         return true;
     }
   };
 
-  const getErrorMessage = (pattern: string): string => {
-    switch (pattern) {
-      case Patterns.name: // Use Patterns.name instead of string
+  const getErrorMessage = (fieldType: string): string => {
+    switch (fieldType) {
+      case "name":
         return "Name can only contain letters and spaces";
-      case Patterns.cardNumber: // Use Patterns.cardNumber instead of string
+      case "cardNumber":
         return "Card number can only contain numbers, hyphens, and spaces";
       default:
         return "Invalid input";
@@ -87,10 +80,10 @@ export default function InputField({
         onChange={handleInputChange}
       ></input>
       <p>
-        {pattern === Patterns.cardNumber
+        {fieldType === "cardNumber"
           ? inputValue.replace(/\s/g, "").length
           : inputValue.length}{" "}
-        / {pattern === Patterns.cardNumber ? 16 : maxLength} {text}
+        / {maxLength} {text}
       </p>
       {errorMessage && <p>{errorMessage}</p>}
     </div>
