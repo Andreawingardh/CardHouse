@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  gap: 1rem;
+}
+
+.buttonWrapper {
+  border-radius: 0.5rem;
+  padding: 2px;
+}
+
+.selected {
+  border: 2px solid white;
+  border-radius: 0.5rem;
+}
