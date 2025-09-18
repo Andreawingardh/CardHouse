@@ -1,0 +1,23 @@
+.wrapper {
+  width: 28.5rem;
+}
+
+.customizationOptions {
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 2.3rem 2.1rem 2.1rem 2.1rem;
+  gap: 2rem;
+  border: 1px solid #262626;
+  border-radius: 0.9375rem;
+}
+
+.header {
+  color: #fafafa;
+  font-family: "SF Pro";
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 590;
+  line-height: normal;
+}
