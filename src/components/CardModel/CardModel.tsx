@@ -1,12 +1,15 @@
-import styles from './CardModel.module.css';
-import { CardModelScene } from './CardModelScene';
+import styles from "./CardModel.module.css";
+import { CardModelScene } from "./CardModelScene";
+import { CardModelTemplateScene } from './CardModelTemplateScene'
 
 export function CardModel() {
   return (
     <div className={styles.cardModel}>
-      <CardModelScene />
+      <CardModelTemplateScene />
       <h3>Preview</h3>
       <p>Customize your card</p>
     </div>
   );
 }
+
+

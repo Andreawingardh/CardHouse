@@ -11,18 +11,23 @@ export function CardModelTemplateScene() {
 
     // Skapa scen & kamera
     const scene = new THREE.Scene();
+    const containerWidth = mountRef.current.clientWidth;
+    const containerHeight = mountRef.current.clientHeight;
     const camera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      containerWidth / containerHeight,
       0.1,
       1000
     );
-    camera.position.z = 5;
+    camera.position.z = 2.5;
+    camera.position.set(0, 0.5, 3); // Slightly above center
+    camera.lookAt(0, -0.2, 0);
 
     // Renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setClearColor(0x000000, 0);
+    renderer.setSize(containerWidth, containerHeight);
+    mountRef.current.appendChild(renderer.domElement);
 
     // Ljus
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
@@ -36,15 +41,70 @@ export function CardModelTemplateScene() {
     const cardHeight: number = 2.1;
     const cardDepth: number = 0.05;
     const geometry = new THREE.BoxGeometry(cardWidth, cardHeight, cardDepth);
-    const cardMaterial = new THREE.MeshStandardMaterial({ color: cardData.colorChoice });
+    const patternTexture = createPatternTexture(cardData.patternChoice);
+    const cardMaterial = new THREE.MeshStandardMaterial({
+      color: cardData.colorChoice,
+      map: patternTexture,
+    });
     const card = new THREE.Mesh(geometry, cardMaterial);
     scene.add(card);
 
+    // Function to create pattern textures
+    function createPatternTexture(pattern: string): THREE.CanvasTexture {
+      const patternCanvas = document.createElement("canvas");
+      patternCanvas.width = 512;
+      patternCanvas.height = 320;
+      const patternCtx = patternCanvas.getContext("2d");
+
+      if (!patternCtx) return new THREE.CanvasTexture(patternCanvas);
+
+      // Fill with base color
+      patternCtx.fillStyle = `#${cardData.colorChoice
+        .toString(16)
+        .padStart(6, "0")}`;
+      patternCtx.fillRect(0, 0, patternCanvas.width, patternCanvas.height);
+
+      if (pattern === "squares") {
+        patternCtx.fillStyle = "rgba(0, 0, 0, 0.3)";
+        for (let x = 40; x < patternCanvas.width; x += 40) {
+          for (let y = 40; y < patternCanvas.height; y += 40) {
+            patternCtx.fillRect(x - 10, y - 10, 20, 20);
+          }
+        }
+      } else if (pattern === "circles") {
+        patternCtx.fillStyle = "rgba(0, 0, 0, 0.3)";
+        for (let x = 35; x < patternCanvas.width; x += 35) {
+          for (let y = 35; y < patternCanvas.height; y += 35) {
+            patternCtx.beginPath();
+            patternCtx.arc(x, y, 12, 0, Math.PI * 2);
+            patternCtx.fill();
+          }
+        }
+      } else if (pattern === "lines") {
+        patternCtx.strokeStyle = "rgba(0, 0, 0, 0.4)";
+        patternCtx.lineWidth = 3;
+        for (let y = 25; y < patternCanvas.height; y += 25) {
+          patternCtx.beginPath();
+          patternCtx.moveTo(0, y);
+          patternCtx.lineTo(patternCanvas.width, y);
+          patternCtx.stroke();
+        }
+        for (let x = 25; x < patternCanvas.width; x += 25) {
+          patternCtx.beginPath();
+          patternCtx.moveTo(x, 0);
+          patternCtx.lineTo(x, patternCanvas.height);
+          patternCtx.stroke();
+        }
+      }
+
+      return new THREE.CanvasTexture(patternCanvas);
+    }
+
     // Lägg till kanter för bättre synlighet
-    const edges = new THREE.EdgesGeometry(geometry);
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-    const cardEdges = new THREE.LineSegments(edges, lineMaterial);
-    scene.add(cardEdges);
+    // const edges = new THREE.EdgesGeometry(geometry);
+    // const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+    // const cardEdges = new THREE.LineSegments(edges, lineMaterial);
+    // scene.add(cardEdges);
 
     // ---- Textdel ----
     // Skapa en canvas för kortnamn
@@ -127,10 +187,12 @@ export function CardModelTemplateScene() {
 
     // Animation
     function animate(): void {
-      card.rotation.y += 0.01;
-      cardEdges.rotation.y += 0.01;
+      // card.rotation.y += 0.01;
+      // cardEdges.rotation.y += 0.01;
+      card.rotation.x = -0.25; // Slight tilt backwards
+      card.rotation.y = 0.15; // Very slight side angle
       renderer.render(scene, camera);
-      requestAnimationFrame(animate);
+      // requestAnimationFrame(animate);
     }
     animate();
 
@@ -150,7 +212,6 @@ export function CardModelTemplateScene() {
         width: "35.6875rem",
         height: "23.1875rem",
         aspectRatio: "177 / 115",
-        border: "solid 1px red",
       }}
     />
   );
