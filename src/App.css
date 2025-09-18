@@ -1,11 +1,10 @@
 :root {
   --font-color-light: #fafafa;
-  --font-color-grey: #A1A1A1;
+  --font-color-grey: #a1a1a1;
   --font-size-h1: 2.25rem;
   --font-size-l: 1.125rem;
   --font-size-m: 1rem;
-  --font-size-s: 0.75rem
-
+  --font-size-s: 0.75rem;
 }
 
 * {
@@ -16,8 +15,8 @@
 
 /* Regular weight */
 @font-face {
-  font-family: 'SF Pro';
-  src: url('src/fonts/SF-Pro-Display-Regular.otf') format(otf);
+  font-family: "SF Pro";
+  src: url("src/fonts/SF-Pro-Display-Regular.otf") format(otf);
   font-weight: 400;
   font-style: normal;
 }
@@ -25,15 +24,15 @@
 /* Semibold weight */
 
 @font-face {
-  font-family: 'SF Pro';
-  src: url('src/fonts/SF-Pro-Display-Semibold.otf') format(otf);
+  font-family: "SF Pro";
+  src: url("src/fonts/SF-Pro-Display-Semibold.otf") format(otf);
   font-weight: 590;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'SF Pro';
-  src: url('src/fonts/SF-Pro-Display-Medium.otf') format(otf);
+  font-family: "SF Pro";
+  src: url("src/fonts/SF-Pro-Display-Medium.otf") format(otf);
   font-weight: 510;
   font-style: normal;
 }
@@ -43,5 +42,4 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-} 
-
+}
