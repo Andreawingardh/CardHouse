@@ -1,5 +1,4 @@
 import styles from "./CardModel.module.css";
-import { CardModelScene } from "./CardModelScene";
 import { CardModelTemplateScene } from './CardModelTemplateScene'
 
 export function CardModel() {
