@@ -1,3 +1,41 @@
 import styles from "./CustomizationPanel.module.css";
+import ColorChoiceButtons from "../ColorChoiceButtons/ColorChoiceButtons";
+import PatternChoiceButtons from "../PatternChoiceButtons/PatternChoiceButtons";
+import ActionButton from "../ActionButton/ActionButton";
+import InputField from "../InputField/InputField";
 
-export default function CustomizationPanel() {}
+export default function CustomizationPanel() {
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.customizationOptions}>
+        <div className={styles.color}>
+          <h3 className={styles.header}>Color</h3>
+          <ColorChoiceButtons />
+        </div>
+        <div className={styles.pattern}>
+          <h3 className={styles.header}>Pattern</h3>
+          <PatternChoiceButtons />
+        </div>
+        <div className={styles.personalization}>
+          <h3 className={styles.header}>Personalization</h3>
+          <InputField
+            label="Personalization"
+            text="characters"
+            maxLength={24}
+            fieldType="name"
+          />
+          <InputField
+            label="Card Number"
+            text="digits"
+            maxLength={16}
+            fieldType="cardNumber"
+          />
+        </div>
+      </div>
+      <div className={styles.buttons}>
+        <ActionButton color={"dark"}>Reset</ActionButton>
+        <ActionButton>Apply for card</ActionButton>
+      </div>
+    </div>
+  );
+}
