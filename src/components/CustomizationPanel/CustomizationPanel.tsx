@@ -21,7 +21,7 @@ export default function CustomizationPanel() {
           <InputField
             label="Personalization"
             text="characters"
-            maxLength={24}
+            maxLength={25}
             fieldType="name"
           />
           <InputField
