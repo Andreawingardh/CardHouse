@@ -7,7 +7,11 @@ interface TextProps {
   paragraphTwo: string;
 }
 
-export function Text({ title, paragraphOne, paragraphTwo }: TextProps) {
+export default function TextContainer({
+  title,
+  paragraphOne,
+  paragraphTwo,
+}: TextProps) {
   return (
     <div className={styles.TextContainer}>
       <h2>{title}</h2>

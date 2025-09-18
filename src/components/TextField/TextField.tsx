@@ -1,6 +1,6 @@
 import styles from "./TextField.module.css";
 
-export function TextField() {
+export default function TextField() {
   return (
     <div className={styles.textField}>
       <p>
