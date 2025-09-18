@@ -1,0 +1,12 @@
+.textField {
+  height: 70px;
+  min-width: 389px;
+  padding: 14px;
+  margin: 0px 33px 33px 33px;
+
+  color: #a1a1a1;
+  font-size: 12px;
+  background-color: #121212;
+  border: solid #262626 1px;
+  border-radius: 8px;
+}
