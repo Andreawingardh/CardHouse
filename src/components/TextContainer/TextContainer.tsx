@@ -13,7 +13,7 @@ export default function TextContainer({
   paragraphTwo,
 }: TextProps) {
   return (
-    <div className={styles.TextContainer}>
+    <div className={styles.textContainer}>
       <h2>{title}</h2>
       <p>{paragraphOne}</p>
       <p>{paragraphTwo}</p>
