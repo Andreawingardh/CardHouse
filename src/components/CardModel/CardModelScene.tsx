@@ -2,8 +2,6 @@ import { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { useCardData } from "../../context/CardDataContext";
-import { FontLoader } from "three/examples/jsm/Addons.js";
-import { TextGeometry } from "three/examples/jsm/Addons.js";
 
 export function CardModelScene() {
   const { cardData } = useCardData();
@@ -30,6 +28,8 @@ export function CardModelScene() {
     mountRef.current.appendChild(renderer.domElement);
 
     let creditCard: THREE.Group | null = null;
+    let cardName: THREE.Mesh | null = null;
+    let cardNumber: THREE.Mesh | null = null;
 
     // Improve lighting
     const ambientLight = new THREE.AmbientLight(0x404040, 1); // Soft ambient light
@@ -59,7 +59,7 @@ export function CardModelScene() {
 
         // Scale to reasonable size
         const maxSize = Math.max(size.x, size.y, size.z);
-        const scale = 3 / maxSize; // Adjust target size as needed
+        const scale = 7 / maxSize; // Adjust target size as needed
         creditCard.scale.setScalar(scale);
 
         // Center the model
@@ -83,8 +83,8 @@ export function CardModelScene() {
         // ---- Textdel ----
         // Skapa en canvas för kortnamn
         const nameCanvas: HTMLCanvasElement = document.createElement("canvas");
-        nameCanvas.width = 1024;
-        nameCanvas.height = 256;
+        nameCanvas.width = 512;
+        nameCanvas.height = 128;
         const nameCtx = nameCanvas.getContext("2d");
 
         if (!nameCtx) {
@@ -95,8 +95,8 @@ export function CardModelScene() {
         // Skapa en canvas för kortnummer
         const numberCanvas: HTMLCanvasElement =
           document.createElement("canvas");
-        numberCanvas.width = 1024;
-        numberCanvas.height = 256;
+        numberCanvas.width = 512;
+        numberCanvas.height = 128;
         const numberCtx = numberCanvas.getContext("2d");
 
         if (!numberCtx) {
@@ -110,13 +110,9 @@ export function CardModelScene() {
             console.log("can't find name");
             return;
           }
-
-          // Bright red background - can't miss it!
-          nameCtx.fillStyle = "red";
-          nameCtx.fillRect(0, 0, nameCanvas.width, nameCanvas.height);
           // White text
-          nameCtx.fillStyle = "black";
-          nameCtx.font = "bold 140px Arial";
+          nameCtx.fillStyle = "white";
+          nameCtx.font = "32px Arial";
           nameCtx.textAlign = "center";
           nameCtx.textBaseline = "middle";
           nameCtx.fillText(
@@ -136,8 +132,6 @@ export function CardModelScene() {
 
           numberCtx.clearRect(0, 0, numberCanvas.width, numberCanvas.height);
 
-          numberCtx.fillStyle = "blue";
-          numberCtx.fillRect(0, 0, numberCanvas.width, numberCanvas.height);
           numberCtx.fillStyle = "white";
           numberCtx.font = "28px monospace"; // Monospace för bättre nummervisning
           numberCtx.textAlign = "left";
@@ -147,27 +141,16 @@ export function CardModelScene() {
 
         // Skapa texturer från canvas
         const nameTexture = new THREE.CanvasTexture(nameCanvas);
-        nameTexture.minFilter = THREE.LinearFilter; // Add this
-        nameTexture.magFilter = THREE.LinearFilter;
         const nameMaterial = new THREE.MeshBasicMaterial({
           map: nameTexture,
           transparent: true,
-          side: THREE.DoubleSide, // Add this
-          depthWrite: false,
-          depthTest: true,
         });
 
         const numberTexture = new THREE.CanvasTexture(numberCanvas);
         const numberMaterial = new THREE.MeshBasicMaterial({
           map: numberTexture,
           transparent: true,
-          side: THREE.DoubleSide, // Add this
-          depthWrite: false,
-          depthTest: true,
         });
-
-        // Skapa platta "overlays" för texten
-        // Kortnamn (högre upp på kortet)
 
         console.log(
           "Card dimensions - width:",
@@ -178,21 +161,33 @@ export function CardModelScene() {
           cardDepth
         );
         const namePlane = new THREE.Mesh(
-          new THREE.PlaneGeometry(1.5, 0.3),
+            new THREE.PlaneGeometry(50, 12),
           nameMaterial
         );
-        namePlane.position.set(-0.5, 0.01, 0.3); // Left side, slightly above, toward top
-        namePlane.rotation.set(0, 0, 0);
-        scene.add(namePlane);
+        namePlane.rotation.x = -Math.PI / 2; // Counter-rotate to face forward
+        creditCard.add(namePlane);
+        namePlane.renderOrder = 1000;
+        namePlane.material.depthTest = false;
+        namePlane.material.depthWrite = false;
 
-        // Kortnummer (lägre ner på kortet)
+        namePlane.position.set(-22, 0.4, 15);
+
+        console.log("creditCard children:", creditCard.children);
+        console.log("namePlane parent:", namePlane.parent);
+        cardName = namePlane;
+
         const numberPlane = new THREE.Mesh(
-          new THREE.PlaneGeometry(2, 0.4),
+     new THREE.PlaneGeometry(50, 12),
           numberMaterial
         );
-        numberPlane.position.set(0, 0.05, -0.2); // Center X, slightly above, lower on card
-        numberPlane.rotation.set(0, 0, 0);
-        scene.add(numberPlane);
+        numberPlane.rotation.x = -Math.PI / 2; // Counter-rotate to face forward
+        creditCard.add(numberPlane);
+        numberPlane.renderOrder = 1000;
+        numberPlane.material.depthTest = false;
+        numberPlane.material.depthWrite = false;
+
+        numberPlane.position.set(-11, 0.4, 7);
+        cardNumber = numberPlane;
 
         // Starta med standardtext
         updateNameText(cardData.cardName);
@@ -204,8 +199,6 @@ export function CardModelScene() {
         console.log("Number plane position:", numberPlane.position);
         console.log("Card depth value:", cardDepth);
         console.log("credit card position", creditCard.position);
-
-        console.log("Test plane added to scene");
       },
       function (progress) {
         console.log("Loading progress:", progress);
