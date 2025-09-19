@@ -28,8 +28,6 @@ export function CardModelScene() {
     mountRef.current.appendChild(renderer.domElement);
 
     let creditCard: THREE.Group | null = null;
-    let cardName: THREE.Mesh | null = null;
-    let cardNumber: THREE.Mesh | null = null;
 
     // Improve lighting
     const ambientLight = new THREE.AmbientLight(0x404040, 1); // Soft ambient light
@@ -174,7 +172,6 @@ export function CardModelScene() {
 
         console.log("creditCard children:", creditCard.children);
         console.log("namePlane parent:", namePlane.parent);
-        cardName = namePlane;
 
         const numberPlane = new THREE.Mesh(
      new THREE.PlaneGeometry(50, 12),
@@ -187,7 +184,6 @@ export function CardModelScene() {
         numberPlane.material.depthWrite = false;
 
         numberPlane.position.set(-11, 0.4, 7);
-        cardNumber = numberPlane;
 
         // Starta med standardtext
         updateNameText(cardData.cardName);
