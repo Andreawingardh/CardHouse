@@ -4,6 +4,7 @@ import PatternChoiceButtons from "../PatternChoiceButtons/PatternChoiceButtons";
 import ActionButton from "../ActionButton/ActionButton";
 import InputField from "../InputField/InputField";
 import TextField from "../TextField/TextField";
+import TextContainer from "../TextContainer/TextContainer";
 
 export default function CustomizationPanel() {
   return (
@@ -38,6 +39,10 @@ export default function CustomizationPanel() {
         <ActionButton color={"dark"}>Reset</ActionButton>
         <ActionButton>Apply for card</ActionButton>
       </div>
+      <TextContainer
+        paragraphOne="Terms and conditions may apply."
+        paragraphTwo="Excessive use may cause you to become impoverished. "
+      />
     </div>
   );
 }
