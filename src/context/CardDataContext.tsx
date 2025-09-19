@@ -5,7 +5,7 @@ type CardData = {
     colorChoice: string,
     patternChoice: string,
     cardName: string,
-    cardNumber: string | number
+    cardNumber: string
 }
 interface CardDataContextType {
   cardData: CardData;
@@ -20,7 +20,7 @@ export function CardDataProvider({ children }: { children: ReactNode }) {
   const [cardData, setCardData] = useState<CardData>({
     colorChoice: '#FFFFFF',
     patternChoice: 'clear',
-    cardName: 'John Doe',
+    cardName: 'Andrea Wingårdh',
     cardNumber: '1234 5678 9123 4567'
   });
 
