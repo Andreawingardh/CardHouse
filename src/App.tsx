@@ -7,15 +7,17 @@ function App() {
   return (
     <>
       <Header />
-      <section className="hero">
-        <HeroHeader />
-      </section>
-      <section className="customization">
-        <div className="cardModelStandIn">
-          {/* Stand in div to replace with Card Model once it is done */}
-        </div>
-        <CustomizationPanel />
-      </section>
+      <main>
+        <section className="hero">
+          <HeroHeader />
+        </section>
+        <section className="customization">
+          <div className="cardModelStandIn">
+            {/* Stand in div to replace with Card Model once it is done */}
+          </div>
+          <CustomizationPanel />
+        </section>
+      </main>
     </>
   );
 }
