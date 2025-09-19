@@ -28,6 +28,7 @@
   width: 2.8125rem;
   height: 2.875rem;
   border-radius: 0.5rem;
+  cursor: pointer;
 }
 
 .paleBlue {

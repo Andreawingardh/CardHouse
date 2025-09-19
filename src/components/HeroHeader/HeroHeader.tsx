@@ -1,12 +1,13 @@
-import styles from './HeroHeader.module.css'
+import styles from "./HeroHeader.module.css";
 
-export function HeroHeader() {
-    return (
-        <div className={styles.heroHeaderContainer}>
-            <h1>Design Your Card</h1>
-            <p>Create a credit card that reflects your style. Customize colors, patterns and
-personalization to make it uniquely yours </p>
-        </div>
-
-    )
+export default function HeroHeader() {
+  return (
+    <div className={styles.heroHeaderContainer}>
+      <h1>Design Your Card</h1>
+      <p>
+        Create a credit card that reflects your style. Customize colors,
+        patterns and personalization to make it uniquely yours{" "}
+      </p>
+    </div>
+  );
 }

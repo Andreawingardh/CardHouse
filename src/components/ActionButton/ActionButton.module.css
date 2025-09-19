@@ -10,14 +10,22 @@
   font-style: normal;
   font-weight: 590;
   line-height: normal;
+  cursor: pointer;
 }
 
-.dark {
+.actionButton:hover {
+  background: #262626;
+  color: #fff;
+}
+
+.dark,
+.dark:active {
   background: #121212;
   color: var(--font-color-light);
 }
 
-.light {
+.light,
+.light:active {
   background: #fff;
   color: #000;
 }

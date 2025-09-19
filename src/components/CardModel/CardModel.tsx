@@ -1,7 +1,7 @@
 import styles from "./CardModel.module.css";
-import { CardModelTemplateScene } from './CardModelTemplateScene'
+import { CardModelTemplateScene } from "./CardModelTemplateScene";
 
-export function CardModel() {
+export default function CardModel() {
   return (
     <div className={styles.cardModel}>
       <CardModelTemplateScene />
@@ -10,5 +10,3 @@ export function CardModel() {
     </div>
   );
 }
-
-
