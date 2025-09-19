@@ -1,6 +1,6 @@
 import styles from "./Header.module.css";
 
-export function Header() {
+export default function Header() {
   return (
     <div className={styles.headerContainer}>
       <div className={styles.headerNavContainer}>
