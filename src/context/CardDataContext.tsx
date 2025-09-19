@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 
 type CardData = {
-    colorChoice: string,
+    colorChoice: number,
     patternChoice: string,
     cardName: string,
     cardNumber: string
@@ -18,9 +18,9 @@ const CardDataContext = createContext<CardDataContextType | undefined>(
 
 export function CardDataProvider({ children }: { children: ReactNode }) {
   const [cardData, setCardData] = useState<CardData>({
-    colorChoice: '#FFFFFF',
-    patternChoice: 'clear',
-    cardName: 'Andrea Wingårdh',
+    colorChoice: 0xc20036,
+    patternChoice: 'circles',
+    cardName: 'John Doe',
     cardNumber: '1234 5678 9123 4567'
   });
 
