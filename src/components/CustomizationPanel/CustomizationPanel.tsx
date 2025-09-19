@@ -3,6 +3,7 @@ import ColorChoiceButtons from "../ColorChoiceButtons/ColorChoiceButtons";
 import PatternChoiceButtons from "../PatternChoiceButtons/PatternChoiceButtons";
 import ActionButton from "../ActionButton/ActionButton";
 import InputField from "../InputField/InputField";
+import TextField from "../TextField/TextField";
 
 export default function CustomizationPanel() {
   return (
@@ -30,6 +31,7 @@ export default function CustomizationPanel() {
             maxLength={16}
             fieldType="cardNumber"
           />
+          <TextField />
         </div>
       </div>
       <div className={styles.buttons}>
