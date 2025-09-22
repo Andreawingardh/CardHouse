@@ -13,8 +13,8 @@ export default function CustomizationPanel() {
   const initialValues = {
     colorChoice: "paleBlue",
     patternChoice: "clear",
-    cardName: "John Doe",
-    cardNumber: "1234 5678 9123 4567",
+    cardName: "",
+    cardNumber: "",
   };
 
   return (
