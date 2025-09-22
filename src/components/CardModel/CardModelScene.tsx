@@ -1,11 +1,18 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { useCardData } from "../../context/CardDataContext";
-import styles from './CardModel.module.css'
+import styles from "./CardModel.module.css";
 
 export function CardModelScene() {
   const { cardData } = useCardData();
+  const [updateNameFunction, setUpdateNameFunction] = useState<
+    ((text: string) => void) | null
+  >(null);
+  const [updateNumberFunction, setUpdateNumberFunction] = useState<
+    ((text: string) => void) | null
+  >(null);
+
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -109,6 +116,8 @@ export function CardModelScene() {
             console.log("can't find name");
             return;
           }
+
+          nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
           // White text
           nameCtx.fillStyle = "white";
           nameCtx.font = "32px Arial";
@@ -188,7 +197,9 @@ export function CardModelScene() {
 
         // Starta med standardtext
         updateNameText(cardData.cardName);
+        setUpdateNameFunction(() => updateNameText);
         updateNumberText(cardData.cardNumber);
+        setUpdateNumberFunction(() => updateNumberText);
 
         console.log("Name plane created:", namePlane);
         console.log("Name plane position:", namePlane.position);
@@ -223,11 +234,14 @@ export function CardModelScene() {
     };
   }, []);
 
-  return (
-    <div
-      ref={mountRef}
-      className={styles.cardModelScene}
+  useEffect(() => {
+    if (updateNameFunction) {
+      updateNameFunction(cardData.cardName);
+    }
+    if (updateNumberFunction) {
+      updateNumberFunction(cardData.cardNumber)
+    }
+  }, [cardData.cardName, updateNameFunction, cardData.cardNumber, updateNumberFunction]);
 
-    />
-  );
+  return <div ref={mountRef} className={styles.cardModelScene} />;
 }
