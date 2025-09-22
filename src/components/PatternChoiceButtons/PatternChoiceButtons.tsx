@@ -1,18 +1,11 @@
 import styles from "./PatternChoiceButtons.module.css";
-import { useState, useEffect } from "react";
 import PatternChoiceButton from "../PatternChoiceButton/PatternChoiceButton";
 import { useCardData } from "../../context/CardDataContext";
 
 const shapes = ["clear", "squares", "stripes", "circles"] as const;
-type ButtonShape = (typeof shapes)[number];
 
 export default function PatternChoiceButtons() {
-  const [selectedShape, setSelectedShape] = useState<ButtonShape>("clear");
   const { cardData, setCardData } = useCardData();
-
-  useEffect(() => {
-    setCardData({ ...cardData, patternChoice: selectedShape });
-  }, [selectedShape]);
 
   return (
     <div className={styles.wrapper}>
@@ -21,10 +14,10 @@ export default function PatternChoiceButtons() {
           <div
             key={shape}
             className={styles.buttonWrapper}
-            onClick={() => setSelectedShape(shape)}
+            onClick={() => setCardData({ ...cardData, patternChoice: shape })}
           >
             <PatternChoiceButton shape={shape} />
-            {selectedShape === shape && (
+            {cardData.patternChoice === shape && (
               <div className={styles.overlay}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +78,8 @@ export default function PatternChoiceButtons() {
         ))}
       </div>
       <p className={styles.selectedShape}>
-        {selectedShape.charAt(0).toUpperCase() + selectedShape.slice(1)}
+        {cardData.patternChoice.charAt(0).toUpperCase() +
+          cardData.patternChoice.slice(1)}
       </p>
     </div>
   );

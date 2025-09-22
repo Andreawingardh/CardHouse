@@ -5,8 +5,18 @@ import ActionButton from "../ActionButton/ActionButton";
 import InputField from "../InputField/InputField";
 import TextField from "../TextField/TextField";
 import TextContainer from "../TextContainer/TextContainer";
+import { useCardData } from "../../context/CardDataContext";
 
 export default function CustomizationPanel() {
+  const { setCardData } = useCardData();
+
+  const initialValues = {
+    colorChoice: "paleBlue",
+    patternChoice: "clear",
+    cardName: "",
+    cardNumber: "",
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.customizationOptions}>
@@ -36,7 +46,9 @@ export default function CustomizationPanel() {
         </div>
       </div>
       <div className={styles.buttons}>
-        <ActionButton color={"dark"}>Reset</ActionButton>
+        <ActionButton color={"dark"} onClick={() => setCardData(initialValues)}>
+          Reset
+        </ActionButton>
         <ActionButton>Apply for card</ActionButton>
       </div>
       <TextContainer
