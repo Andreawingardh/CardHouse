@@ -2,7 +2,7 @@ import styles from "./TextContainer.module.css";
 
 //Scaleable prop interface with optional parameters
 interface TextProps {
-  title: string;
+  title?: string;
   paragraphOne: string;
   paragraphTwo: string;
 }
@@ -13,7 +13,7 @@ export default function TextContainer({
   paragraphTwo,
 }: TextProps) {
   return (
-    <div className={styles.TextContainer}>
+    <div className={styles.textContainer}>
       <h2>{title}</h2>
       <p>{paragraphOne}</p>
       <p>{paragraphTwo}</p>
