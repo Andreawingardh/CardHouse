@@ -1,10 +1,10 @@
 import styles from "./CardModel.module.css";
-import { CardModelTemplateScene } from "./CardModelTemplateScene";
+import { CardModelScene } from "./CardModelScene";
 
 export default function CardModel() {
   return (
     <div className={styles.cardModel}>
-      <CardModelTemplateScene />
+      <CardModelScene />
       <h3>Preview</h3>
       <p>Customize your card</p>
     </div>
