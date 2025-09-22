@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { useCardData } from "../../context/CardDataContext";
+import styles from './CardModel.module.css'
 
 export function CardModelScene() {
   const { cardData } = useCardData();
@@ -159,7 +160,7 @@ export function CardModelScene() {
           cardDepth
         );
         const namePlane = new THREE.Mesh(
-            new THREE.PlaneGeometry(50, 12),
+          new THREE.PlaneGeometry(50, 12),
           nameMaterial
         );
         namePlane.rotation.x = -Math.PI / 2; // Counter-rotate to face forward
@@ -174,7 +175,7 @@ export function CardModelScene() {
         console.log("namePlane parent:", namePlane.parent);
 
         const numberPlane = new THREE.Mesh(
-     new THREE.PlaneGeometry(50, 12),
+          new THREE.PlaneGeometry(50, 12),
           numberMaterial
         );
         numberPlane.rotation.x = -Math.PI / 2; // Counter-rotate to face forward
@@ -225,12 +226,8 @@ export function CardModelScene() {
   return (
     <div
       ref={mountRef}
-      style={{
-        width: "35.6875rem",
-        height: "23.1875rem",
-        aspectRatio: 177 / 115,
-        border: "solid 1px red",
-      }}
+      className={styles.cardModelScene}
+
     />
   );
 }

@@ -23,3 +23,11 @@
   font-weight: 510;
   line-height: normal;
 }
+
+.cardModelScene {
+  width: 35.6875rem;
+  height: 23.1875rem;
+  aspect-ratio: 177 / 115;
+  border-radius: 0.9375rem;
+  border: 1px solid #262626;
+}
