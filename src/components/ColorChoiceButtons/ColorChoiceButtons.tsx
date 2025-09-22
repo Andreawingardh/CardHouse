@@ -1,12 +1,18 @@
 import styles from "./ColorChoiceButtons.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ColorChoiceButton from "../ColorChoiceButton/ColorChoiceButton";
+import { useCardData } from "../../context/CardDataContext";
 
 const colors = ["paleBlue", "blue", "green", "orange", "red", "metal"] as const;
 type ButtonColor = (typeof colors)[number];
 
 export default function ColorChoiceButtons() {
   const [selectedColor, setSelectedColor] = useState<ButtonColor>("paleBlue");
+  const { cardData, setCardData } = useCardData();
+
+  useEffect(() => {
+    setCardData({ ...cardData, colorChoice: selectedColor });
+  }, [selectedColor]);
 
   return (
     <div className={styles.container}>
