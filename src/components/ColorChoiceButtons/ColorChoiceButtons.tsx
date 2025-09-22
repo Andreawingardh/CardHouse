@@ -1,18 +1,11 @@
 import styles from "./ColorChoiceButtons.module.css";
-import { useState, useEffect } from "react";
 import ColorChoiceButton from "../ColorChoiceButton/ColorChoiceButton";
 import { useCardData } from "../../context/CardDataContext";
 
 const colors = ["paleBlue", "blue", "green", "orange", "red", "metal"] as const;
-type ButtonColor = (typeof colors)[number];
 
 export default function ColorChoiceButtons() {
-  const [selectedColor, setSelectedColor] = useState<ButtonColor>("paleBlue");
   const { cardData, setCardData } = useCardData();
-
-  useEffect(() => {
-    setCardData({ ...cardData, colorChoice: selectedColor });
-  }, [selectedColor]);
 
   return (
     <div className={styles.container}>
@@ -20,10 +13,10 @@ export default function ColorChoiceButtons() {
         <div
           key={color}
           className={styles.buttonWrapper}
-          onClick={() => setSelectedColor(color)}
+          onClick={() => setCardData({ ...cardData, colorChoice: color })}
         >
           <ColorChoiceButton color={color} />
-          {selectedColor === color && (
+          {cardData.colorChoice === color && (
             <div className={styles.overlay}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
