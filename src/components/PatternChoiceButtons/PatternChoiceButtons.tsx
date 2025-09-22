@@ -1,12 +1,18 @@
 import styles from "./PatternChoiceButtons.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PatternChoiceButton from "../PatternChoiceButton/PatternChoiceButton";
+import { useCardData } from "../../context/CardDataContext";
 
 const shapes = ["clear", "squares", "stripes", "circles"] as const;
 type ButtonShape = (typeof shapes)[number];
 
 export default function PatternChoiceButtons() {
   const [selectedShape, setSelectedShape] = useState<ButtonShape>("clear");
+  const { cardData, setCardData } = useCardData();
+
+  useEffect(() => {
+    setCardData({ ...cardData, patternChoice: selectedShape });
+  }, [selectedShape]);
 
   return (
     <div className={styles.wrapper}>

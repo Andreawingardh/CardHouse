@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./InputField.module.css";
+import { useCardData } from "../../context/CardDataContext";
 
 type InputFieldProps = {
   text: string;
@@ -14,8 +15,23 @@ export default function InputField({
   maxLength,
   fieldType,
 }: InputFieldProps) {
+  const { cardData, setCardData } = useCardData();
   const [inputValue, setInputValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    switch (fieldType) {
+      case "name":
+        setCardData({ ...cardData, cardName: inputValue });
+        break;
+      case "cardNumber":
+        setCardData({ ...cardData, cardNumber: inputValue });
+        break;
+      default:
+        break;
+    }
+    console.log(cardData)
+  }, [inputValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
@@ -43,6 +59,8 @@ export default function InputField({
       }
     }
     setInputValue(value);
+
+    console.log(inputValue)
   };
 
   const isValidInput = (value: string, fieldType: string): boolean => {
