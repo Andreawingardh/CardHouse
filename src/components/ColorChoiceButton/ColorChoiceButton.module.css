@@ -1,0 +1,98 @@
+:root {
+  --pale-blue-light: #2e3d54;
+  --pale-blue-dark: #121b30;
+  --pale-blue-border: #49648f;
+
+  --blue-light: #1644cf;
+  --blue-dark: #1c3a95;
+  --blue-border: #486ae4;
+
+  --green-light: #007250;
+  --green-dark: #00523d;
+  --green-border: #489074;
+
+  --orange-light: #c13400;
+  --orange-dark: #872b09;
+  --orange-border: #ce5f41;
+
+  --red-light: #c20036;
+  --red-dark: #900636;
+  --red-border: #ca445f;
+
+  --metal-light: #62626b;
+  --metal-dark: #45454d;
+  --metal-border: #656569;
+}
+
+.button {
+  width: 2.8125rem;
+  height: 2.875rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.paleBlue {
+  border: 2px solid var(--pale-blue-border);
+  background: linear-gradient(
+    0deg,
+    var(--pale-blue-light) 0%,
+    var(--pale-blue-dark) 100%
+  );
+}
+
+.blue {
+  border-radius: 0.5rem;
+  border: 2px solid var(--blue-border);
+  background: linear-gradient(
+    0deg,
+    var(--blue-light) 0%,
+    var(--blue-dark) 100%
+  );
+}
+
+.green {
+  border-radius: 0.5rem;
+  border: 2px solid var(--green-border);
+  background: linear-gradient(
+    0deg,
+    var(--green-light) 0%,
+    var(--green-dark) 100%
+  );
+}
+
+.orange {
+  border-radius: 0.5rem;
+  border: 2px solid var(--orange-border);
+  background: linear-gradient(
+    0deg,
+    var(--orange-light) 0%,
+    var(--orange-dark) 100%
+  );
+}
+
+.red {
+  border-radius: 0.5rem;
+  border: 2px solid var(--red-border);
+  background: linear-gradient(0deg, var(--red-light) 0%, var(--red-dark) 100%);
+}
+
+.metal {
+  border-radius: 0.5rem;
+  border: 2px solid var(--metal-border);
+  background: linear-gradient(
+        to bottom right,
+        var(--metal-light) 0%,
+        var(--metal-dark) 50%
+      )
+      bottom right / 50% 50% no-repeat,
+    linear-gradient(
+        to bottom left,
+        var(--metal-light) 0%,
+        var(--metal-dark) 50%
+      )
+      bottom left / 50% 50% no-repeat,
+    linear-gradient(to top left, var(--metal-light) 0%, var(--metal-dark) 50%)
+      top left / 50% 50% no-repeat,
+    linear-gradient(to top right, var(--metal-light) 0%, var(--metal-dark) 50%)
+      top right / 50% 50% no-repeat;
+}

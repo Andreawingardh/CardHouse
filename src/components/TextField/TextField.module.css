@@ -1,0 +1,17 @@
+.textField {
+  background: #121212;
+  width: 24.3125rem;
+  height: 4.375rem;
+  padding: 0.9rem 0.8rem;
+  border: 1px solid #262626;
+  border-radius: 0.5rem;
+}
+
+.paragraph {
+  color: #a1a1a1;
+  font-family: "SF Pro";
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 510;
+  line-height: normal;
+}

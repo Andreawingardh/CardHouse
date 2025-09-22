@@ -1,0 +1,43 @@
+.headerNavContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.8rem 6.4rem;
+  border-bottom: solid 1px #262626;
+}
+
+.headerLogo {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.headerLogo h3 {
+  color: #fafafa;
+  font-family: "SF Pro";
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 590;
+  line-height: normal;
+  align-self: center;
+  cursor: pointer;
+}
+
+.headerNav {
+  display: flex;
+  align-items: center;
+  gap: 1.9rem;
+}
+
+.link {
+  color: #a1a1a1;
+  font-family: "SF Pro";
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
+}
+
+.link:hover {
+  color: #fafafa;
+}

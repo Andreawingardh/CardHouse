@@ -1,0 +1,31 @@
+.actionButton {
+  width: 14rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  border: 1px solid #262626;
+  color: #000;
+  font-family: "SF Pro";
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 590;
+  line-height: normal;
+  cursor: pointer;
+}
+
+.actionButton:hover {
+  background: #262626;
+  color: #fff;
+}
+
+.dark,
+.dark:active {
+  background: #121212;
+  color: var(--font-color-light);
+}
+
+.light,
+.light:active {
+  background: #fff;
+  color: #000;
+}
