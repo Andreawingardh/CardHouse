@@ -64,7 +64,7 @@ export function CardModelScene() {
       blue: "assets/model/credit_card_model//Textures/Texture03_Blue.png",
       green: "assets/model/credit_card_model//Textures/Texture04_Green.png",
       orange: "assets/model/credit_card_model//Textures/Texture05_Orange.png",
-      magenta: "assets/model/credit_card_model//Textures/Texture06_Magenta.png",
+      red: "assets/model/credit_card_model//Textures/Texture06_Magenta.png",
     };
 
     const gltfLoader = new GLTFLoader();
@@ -251,7 +251,7 @@ export function CardModelScene() {
         setUpdateNameFunction(() => updateNameText);
         updateNumberText(cardData.cardNumber);
         setUpdateNumberFunction(() => updateNumberText);
-        changeCreditCardTexture('magenta')
+        changeCreditCardTexture('red')
       },
       function (progress) {
         console.log("Loading progress:", progress);
