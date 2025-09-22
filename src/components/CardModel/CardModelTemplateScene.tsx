@@ -59,10 +59,10 @@ export function CardModelTemplateScene() {
       if (!patternCtx) return new THREE.CanvasTexture(patternCanvas);
 
       // Fill with base color
-      patternCtx.fillStyle = `#${cardData.colorChoice
-        .toString(16)
-        .padStart(6, "0")}`;
-      patternCtx.fillRect(0, 0, patternCanvas.width, patternCanvas.height);
+      // patternCtx.fillStyle = `#${cardData.colorChoice
+      //   .toString(16)
+      //   .padStart(6, "0")}`;
+      // patternCtx.fillRect(0, 0, patternCanvas.width, patternCanvas.height);
 
       if (pattern === "squares") {
         patternCtx.fillStyle = "rgba(0, 0, 0, 0.3)";
