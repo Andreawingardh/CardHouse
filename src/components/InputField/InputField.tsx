@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styles from "./InputField.module.css";
 import { useCardData } from "../../context/CardDataContext";
 
@@ -16,56 +16,42 @@ export default function InputField({
   fieldType,
 }: InputFieldProps) {
   const { cardData, setCardData } = useCardData();
-  const [inputValue, setInputValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    switch (fieldType) {
-      case "name":
-        setCardData({ ...cardData, cardName: inputValue });
-        break;
-      case "cardNumber":
-        setCardData({ ...cardData, cardNumber: inputValue });
-        break;
-      default:
-        break;
-    }
-    console.log(cardData)
-  }, [inputValue]);
+  const value = fieldType === "name" ? cardData.cardName : cardData.cardNumber;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
+    let input = e.target.value;
     setErrorMessage("");
 
-    if (!isValidInput(value, fieldType)) {
+    // Validates
+    if (!isValidInput(input, fieldType)) {
       setErrorMessage(getErrorMessage(fieldType));
       return;
     }
 
-    // Auto-format card numbers
     if (fieldType === "cardNumber") {
-      const digitsOnly = value.replace(/\D/g, "");
+      const digitsOnly = input.replace(/\D/g, "");
       if (digitsOnly.length > maxLength) {
         setErrorMessage(`Card number cannot exceed ${maxLength} digits`);
         return;
       }
-      // Format with spaces every 4 digits
-      value = digitsOnly.replace(/(\d{4})(?=\d)/g, "$1 ");
-    } else {
-      // Regular validation for other fields
-      if (value.length > maxLength) {
-        setErrorMessage(`Maximum ${maxLength} characters allowed`);
-        return;
-      }
+      // Add blank spaces every fourth digits
+      input = digitsOnly.replace(/(\d{4})(?=\d)/g, "$1 ");
+    } else if (input.length > maxLength) {
+      setErrorMessage(`Maximum ${maxLength} characters allowed`);
+      return;
     }
-    setInputValue(value);
 
-    console.log(inputValue)
+    // Update context
+    setCardData({
+      ...cardData,
+      [fieldType === "name" ? "cardName" : "cardNumber"]: input,
+    });
   };
 
   const isValidInput = (value: string, fieldType: string): boolean => {
     if (value === "") return true;
-
     switch (fieldType) {
       case "name":
         return /^[a-zA-ZåäöÅÄÖ\s]*$/.test(value);
@@ -94,13 +80,13 @@ export default function InputField({
         name={label}
         className={styles.inputField}
         type="text"
-        value={inputValue}
+        value={value}
         onChange={handleInputChange}
-      ></input>
+      />
       <p>
         {fieldType === "cardNumber"
-          ? inputValue.replace(/\s/g, "").length
-          : inputValue.length}{" "}
+          ? value.replace(/\s/g, "").length
+          : value.length}{" "}
         / {maxLength} {text}
       </p>
       {errorMessage && <p>{errorMessage}</p>}
