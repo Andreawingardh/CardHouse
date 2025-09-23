@@ -3,6 +3,20 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { useCardData } from "../../context/CardDataContext";
 import styles from "./CardModel.module.css";
+import { OrbitControls } from "three/examples/jsm/Addons.js";
+
+export const availableTextures = {
+  original:
+    "assets/model/credit_card_model/Textures/Texture01_image@0.5x@0.5x@0.5x.png",
+  paleBlue: "assets/model/credit_card_model//Textures/Texture02_paleBlue.png",
+  blue: "assets/model/credit_card_model//Textures/Texture03_Blue.png",
+  green: "assets/model/credit_card_model//Textures/Texture04_Green.png",
+  orange: "assets/model/credit_card_model//Textures/Texture05_Orange.png",
+  red: "assets/model/credit_card_model//Textures/Texture06_Magenta.png",
+  metal: "assets/model/credit_card_model//Textures/Texture07_Metal.png",
+} as const;
+
+export type TextureKey = keyof typeof availableTextures;
 
 export function CardModelScene() {
   const { cardData } = useCardData();
@@ -12,6 +26,8 @@ export function CardModelScene() {
   const [updateNumberFunction, setUpdateNumberFunction] = useState<
     ((text: string) => void) | null
   >(null);
+  const [changeCreditCardTextureFunction, setChangeCreditCardTextureFunction] =
+    useState<((text: string) => void) | null>(null);
 
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -31,6 +47,8 @@ export function CardModelScene() {
     const renderer = new THREE.WebGLRenderer({
       alpha: true, // Enable transparency
     });
+
+    const controls = new OrbitControls(camera, renderer.domElement);
     renderer.setClearColor(0x000000, 0); // Set clear color with 0 alpha (fully transparent)
     renderer.setSize(containerWidth, containerHeight);
     mountRef.current.appendChild(renderer.domElement);
@@ -48,15 +66,16 @@ export function CardModelScene() {
     camera.position.set(0, 0, 4);
     camera.lookAt(0, 0, 0);
 
+    controls.update();
+
+    // Create our texture loader instance
+    const textureLoader = new THREE.TextureLoader();
+
     const gltfLoader = new GLTFLoader();
     gltfLoader.load(
       "/assets/model/credit_card_model/credit_card.gltf",
       function (gltf) {
         creditCard = gltf.scene;
-        console.log("GLTF loaded successfully:", gltf);
-        console.log("Credit card object:", creditCard);
-        // Add this to check if the model is actually there
-        console.log("Number of children in model:", creditCard.children.length);
 
         // Get bounding box
         const box = new THREE.Box3().setFromObject(creditCard);
@@ -71,20 +90,53 @@ export function CardModelScene() {
         // Center the model
         creditCard.position.sub(center.multiplyScalar(scale));
 
-        // Get new dimensions
-        const scaledBox = new THREE.Box3().setFromObject(creditCard);
-        const scaledSize = scaledBox.getSize(new THREE.Vector3());
-        console.log("Scaled width:", scaledSize.x);
-        console.log("Scaled height:", scaledSize.y);
-
-        const cardWidth = scaledSize.x;
-        const cardHeight = scaledSize.z;
-        const cardDepth = scaledSize.y;
-
-        // Fix orientation
+        // // Fix orientation
         creditCard.rotation.x = Math.PI / 2;
 
         scene.add(creditCard);
+
+        //Color change
+        function changeCreditCardTexture(
+          textureKey: keyof typeof availableTextures
+        ) {
+
+          gltf.scene.traverse((child: THREE.Object3D) => {
+            if (child instanceof THREE.Mesh) {
+              const mesh = child as THREE.Mesh;
+              const material = mesh.material as THREE.MeshPhysicalMaterial;
+
+              if (material.name === "01_Image") {
+                const texturePath = availableTextures[textureKey];
+
+                textureLoader.load(
+                  texturePath,
+                  (newTexture) => {
+                    // This is where we fix the orientation issues
+
+                    newTexture.flipY = false;
+                    newTexture.repeat.set(1, 1);
+
+                    // // Set the texture wrapping mode to allow negative repeat values
+                    newTexture.wrapS = THREE.RepeatWrapping;
+                    newTexture.wrapT = THREE.RepeatWrapping;
+
+                    // Apply the corrected texture to the material
+                    material.map = newTexture;
+                    material.needsUpdate = true;
+
+                  },
+                  undefined,
+                  (error) => {
+                    console.error(
+                      `Failed to load texture: ${textureKey}`,
+                      error
+                    );
+                  }
+                );
+              }
+            }
+          });
+        }
 
         // ---- Textdel ----
         // Skapa en canvas för kortnamn
@@ -160,14 +212,6 @@ export function CardModelScene() {
           transparent: true,
         });
 
-        console.log(
-          "Card dimensions - width:",
-          cardWidth,
-          "height:",
-          cardHeight,
-          "depth:",
-          cardDepth
-        );
         const namePlane = new THREE.Mesh(
           new THREE.PlaneGeometry(50, 12),
           nameMaterial
@@ -179,9 +223,6 @@ export function CardModelScene() {
         namePlane.material.depthWrite = false;
 
         namePlane.position.set(-22, 0.4, 15);
-
-        console.log("creditCard children:", creditCard.children);
-        console.log("namePlane parent:", namePlane.parent);
 
         const numberPlane = new THREE.Mesh(
           new THREE.PlaneGeometry(50, 12),
@@ -200,13 +241,7 @@ export function CardModelScene() {
         setUpdateNameFunction(() => updateNameText);
         updateNumberText(cardData.cardNumber);
         setUpdateNumberFunction(() => updateNumberText);
-
-        console.log("Name plane created:", namePlane);
-        console.log("Name plane position:", namePlane.position);
-        console.log("Number plane created:", numberPlane);
-        console.log("Number plane position:", numberPlane.position);
-        console.log("Card depth value:", cardDepth);
-        console.log("credit card position", creditCard.position);
+        setChangeCreditCardTextureFunction(() => changeCreditCardTexture);
       },
       function (progress) {
         console.log("Loading progress:", progress);
@@ -217,9 +252,7 @@ export function CardModelScene() {
     );
 
     function animate() {
-      if (creditCard) {
-        // creditCard.rotation.x += 0.01;
-      }
+
       renderer.render(scene, camera);
     }
 
@@ -239,9 +272,23 @@ export function CardModelScene() {
       updateNameFunction(cardData.cardName);
     }
     if (updateNumberFunction) {
-      updateNumberFunction(cardData.cardNumber)
+      updateNumberFunction(cardData.cardNumber);
     }
-  }, [cardData.cardName, updateNameFunction, cardData.cardNumber, updateNumberFunction]);
+    if (changeCreditCardTextureFunction) {
+      changeCreditCardTextureFunction(cardData.colorChoice);
+    }
+
+    if (cardData.colorChoice) {
+      // changeCreditCardTexture(cardData.colorChoice)
+    }
+  }, [
+    cardData.cardName,
+    updateNameFunction,
+    cardData.cardNumber,
+    updateNumberFunction,
+    changeCreditCardTextureFunction,
+    cardData.colorChoice,
+  ]);
 
   return <div ref={mountRef} className={styles.cardModelScene} />;
 }

@@ -1,8 +1,9 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
+import type { TextureKey } from "../components/CardModel/CardModelScene";
 
 type CardData = {
-    colorChoice: string,
+    colorChoice: TextureKey,
     patternChoice: string,
     cardName: string,
     cardNumber: string
