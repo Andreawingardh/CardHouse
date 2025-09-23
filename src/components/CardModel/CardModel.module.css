@@ -6,7 +6,7 @@
 .cardModel h3 {
   color: var(--font-color-light);
   text-align: center;
-  font-family: "SF Pro";
+  font-family: "SF Pro", Arial, Helvetica, sans-serif;
   font-size: var(font-size-l);
   font-style: normal;
   font-weight: 590;
@@ -17,7 +17,7 @@
 .cardModel p {
   color: var(--font-color-grey);
   text-align: center;
-  font-family: "SF Pro";
+  font-family: "SF Pro", Arial, Helvetica, sans-serif;
   font-size: var(font-size-s);
   font-style: normal;
   font-weight: 510;

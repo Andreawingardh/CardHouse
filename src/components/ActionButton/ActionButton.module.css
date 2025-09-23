@@ -5,7 +5,7 @@
   border-radius: 0.5rem;
   border: 1px solid #262626;
   color: #000;
-  font-family: "SF Pro";
+  font-family: "SF Pro", Arial, Helvetica, sans-serif;
   font-size: var(--font-size-m);
   font-style: normal;
   font-weight: 590;
