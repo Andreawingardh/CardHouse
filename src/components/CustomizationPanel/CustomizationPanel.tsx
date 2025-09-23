@@ -6,12 +6,13 @@ import InputField from "../InputField/InputField";
 import TextField from "../TextField/TextField";
 import TextContainer from "../TextContainer/TextContainer";
 import { useCardData } from "../../context/CardDataContext";
+import type { TextureKey } from "../CardModel/CardModelScene";
 
 export default function CustomizationPanel() {
   const { setCardData } = useCardData();
 
   const initialValues = {
-    colorChoice: "paleBlue",
+    colorChoice: "paleBlue" as TextureKey,
     patternChoice: "clear",
     cardName: "",
     cardNumber: "",

@@ -19,10 +19,10 @@ const CardDataContext = createContext<CardDataContextType | undefined>(
 
 export function CardDataProvider({ children }: { children: ReactNode }) {
   const [cardData, setCardData] = useState<CardData>({
-    colorChoice: 'orange',
-    patternChoice: 'circles',
-    cardName: 'John Doe',
-    cardNumber: '1234 5678 9123 4567'
+    colorChoice: 'paleBlue',
+    patternChoice: 'clear',
+    cardName: '',
+    cardNumber: ''
   });
 
     const value: CardDataContextType = {
