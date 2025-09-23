@@ -138,7 +138,7 @@ export function CardModelScene() {
 
         //Pattern change
 
-        const patternTexture = createPatternTexture(cardData.patternChoice);
+        const patternTexture = createPatternTexture('circles');
         const textureMaterial = new THREE.MeshStandardMaterial({
           map: patternTexture,
           transparent: true,
@@ -155,12 +155,6 @@ export function CardModelScene() {
           patternCanvas.height = 320;
           const patternCtx = patternCanvas.getContext("2d");
 
-          console.log(
-            "Pattern canvas size:",
-            patternCanvas.width,
-            patternCanvas.height
-          );
-          console.log("Pattern plane size:", size.x, size.z);
 
           if (!patternCtx) return new THREE.CanvasTexture(patternCanvas);
 
