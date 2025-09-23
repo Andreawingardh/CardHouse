@@ -13,7 +13,7 @@
 
 .headerLogo h3 {
   color: #fafafa;
-  font-family: "SF Pro";
+  font-family: "SF Pro", Arial, Helvetica, sans-serif;
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 590;
@@ -30,7 +30,7 @@
 
 .link {
   color: #a1a1a1;
-  font-family: "SF Pro";
+  font-family: "SF Pro", Arial, Helvetica, sans-serif;
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
