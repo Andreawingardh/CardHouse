@@ -89,7 +89,9 @@ export default function InputField({
           : value.length}{" "}
         / {maxLength} {text}
       </p>
-      {errorMessage && <p>{errorMessage}</p>}
+      <div className={styles.errorMessages}>
+        {errorMessage && <p>{errorMessage}</p>}
+      </div>
     </div>
   );
 }
