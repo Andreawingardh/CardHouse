@@ -1,18 +1,17 @@
-import { useCardData } from "../../context/CardDataContext";
+import { useState } from "react";
 import styles from "./CardModel.module.css";
 import { CardModelScene } from "./CardModelScene";
 
 export default function CardModel() {
-  const { cardData } = useCardData();
+
+  const [ errorMessage, setErrorMessage ] = useState<string>('')
+  
   return (
     <div className={styles.cardModel}>
-      <CardModelScene />
+      <CardModelScene setErrorMessage={setErrorMessage} />
       <h3>Preview</h3>
       <p>Customize your card</p>
-      <p>{cardData.cardName}</p>
-      <p>{cardData.cardNumber}</p>
-      <p>{cardData.colorChoice}</p>
-      <p>{cardData.patternChoice}</p>
+      {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
     </div>
   );
 }

@@ -5,6 +5,10 @@ import { useCardData } from "../../context/CardDataContext";
 import styles from "./CardModel.module.css";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
+interface CardModelSceneProps {
+  setErrorMessage: (text: string) => void
+}
+
 export const availableTextures = {
   original:
     "assets/model/credit_card_model/Textures/Texture01_image@0.5x@0.5x@0.5x.png",
@@ -18,7 +22,7 @@ export const availableTextures = {
 
 export type TextureKey = keyof typeof availableTextures;
 
-export function CardModelScene() {
+export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
   const { cardData } = useCardData();
   const [updateNameFunction, setUpdateNameFunction] = useState<
     ((text: string) => void) | null
@@ -141,9 +145,9 @@ export function CardModelScene() {
                   },
                   undefined,
                   (error) => {
-                    console.error(
-                      `Failed to load texture: ${textureKey}`,
-                      error
+                    setErrorMessage(
+                      `Failed to load texture: ${textureKey}, 
+                      ${(error as Error).message}`
                     );
                   }
                 );
@@ -237,7 +241,7 @@ export function CardModelScene() {
         const nameCtx = nameCanvas.getContext("2d");
 
         if (!nameCtx) {
-          console.error("Could not get 2D context from name canvas");
+          setErrorMessage("Could not get 2D context from name canvas");
           return;
         }
 
@@ -249,14 +253,13 @@ export function CardModelScene() {
         const numberCtx = numberCanvas.getContext("2d");
 
         if (!numberCtx) {
-          console.error("Could not get 2D context from number canvas");
+          setErrorMessage("Could not get 2D context from number canvas");
           return;
         }
 
         // Funktion för att uppdatera kortnamn
         function updateNameText(newText: string): void {
           if (!nameCtx) {
-            console.log("can't find name");
             return;
           }
 
@@ -277,7 +280,6 @@ export function CardModelScene() {
         // Funktion för att uppdatera kortnummer
         function updateNumberText(newText: string): void {
           if (!numberCtx) {
-            console.log("can't find number");
             return;
           }
 
@@ -339,7 +341,7 @@ export function CardModelScene() {
         console.log("Loading progress:", progress);
       },
       function (error) {
-        console.error("Error loading GLTF:", error);
+        console.error(`Error loading GLTF:, ${(error as Error).message}`);
       }
     );
 
