@@ -38,3 +38,7 @@
   font-weight: 510;
   line-height: normal;
 }
+
+.errorMessages {
+  height: 0.75rem;
+}
