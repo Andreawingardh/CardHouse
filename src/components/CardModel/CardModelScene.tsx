@@ -144,7 +144,6 @@ export function CardModelScene() {
         }
 
         //Pattern change
-
         const patternTexture = createPatternTexture(cardData.patternChoice);
         const textureMaterial = new THREE.MeshStandardMaterial({
           map: patternTexture,
@@ -155,56 +154,61 @@ export function CardModelScene() {
           new THREE.PlaneGeometry(size.x, size.z),
           textureMaterial
         );
-        // Function to create pattern textures
-        function createPatternTexture(pattern: string): THREE.CanvasTexture {
-          const patternCanvas = document.createElement("canvas");
-          patternCanvas.width = 512;
-          patternCanvas.height = 320;
-          const patternCtx = patternCanvas.getContext("2d");
+        // Function to create pattern textures as SVG
+        function createPatternTexture(pattern: string): THREE.Texture {
+          let svgString = "";
 
-          if (!patternCtx) return new THREE.CanvasTexture(patternCanvas);
+          switch (pattern) {
+            case "squares":
+              svgString = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 39" width="512" height="320">
+          <rect x="35.5" y="5.7" width="11" height="11" transform="rotate(45 35.5 5.7)" stroke="#737C89" fill="none"/>
+          <rect x="10.3" y="18.7" width="6.4" height="6.4" transform="rotate(24.5 10.3 18.7)" stroke="#737C89" fill="none"/>
+          <rect x="20.6" y="29.1" width="4.1" height="4.1" transform="rotate(-20.3 23.6 29.1)" stroke="#737C89" fill="none"/>
+        </svg>
+      `;
+              break;
 
-          // Fill with base color
-          // patternCtx.fillStyle = `#${cardData.colorChoice
-          //   .toString(16)
-          //   .padStart(6, "0")}`;
-          // patternCtx.fillRect(0, 0, patternCanvas.width, patternCanvas.height);
+            case "stripes":
+              svgString = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 39" width="512" height="320">
+          <rect x="2" y="13" width="45" height="2" fill="#6B7584" />
+          <rect x="2" y="18" width="34" height="2" fill="#6B7584" />
+          <rect x="2" y="23" width="24" height="2" fill="#6B7584" />
+        </svg>
+      `;
+              break;
 
-          if (pattern === "squares") {
-            patternCtx.fillStyle = "rgba(0, 0, 0, 0.3)";
-            for (let x = 40; x < patternCanvas.width; x += 40) {
-              for (let y = 40; y < patternCanvas.height; y += 40) {
-                patternCtx.fillRect(x - 10, y - 10, 20, 20);
-              }
-            }
-          } else if (pattern === "circles") {
-            patternCtx.fillStyle = "rgba(0, 0, 0, 0.3)";
-            for (let x = 35; x < patternCanvas.width; x += 35) {
-              for (let y = 35; y < patternCanvas.height; y += 35) {
-                patternCtx.beginPath();
-                patternCtx.arc(x, y, 12, 0, Math.PI * 2);
-                patternCtx.fill();
-              }
-            }
-          } else if (pattern === "stripes") {
-            patternCtx.strokeStyle = "rgba(0, 0, 0, 0.4)";
-            patternCtx.lineWidth = 3;
-            for (let y = 25; y < patternCanvas.height; y += 25) {
-              patternCtx.beginPath();
-              patternCtx.moveTo(0, y);
-              patternCtx.lineTo(patternCanvas.width, y);
-              patternCtx.stroke();
-            }
-            for (let x = 25; x < patternCanvas.width; x += 25) {
-              patternCtx.beginPath();
-              patternCtx.moveTo(x, 0);
-              patternCtx.lineTo(x, patternCanvas.height);
-              patternCtx.stroke();
-            }
+            case "circles":
+              svgString = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 39" width="512" height="320">
+          <circle cx="7.5" cy="31.5" r="2.5" fill="#737C8A" />
+          <circle cx="41.5" cy="6.5" r="2.5" fill="#737C8A" />
+          <circle cx="10" cy="24" r="2" fill="#737C8A" />
+          <circle cx="33" cy="8" r="2" fill="#737C8A" />
+          <circle cx="42" cy="14" r="2" fill="#737C8A" />
+          <circle cx="16.5" cy="26.5" r="1.5" fill="#737C8A" />
+          <circle cx="36.5" cy="17.5" r="1.5" fill="#737C8A" />
+        </svg>
+      `;
+              break;
+
+            default:
+              const emptyCanvas = document.createElement("canvas");
+              return new THREE.CanvasTexture(emptyCanvas);
           }
 
-          return new THREE.CanvasTexture(patternCanvas);
+          const svgBase64 = `data:image/svg+xml;base64,${btoa(svgString)}`;
+          const texture = new THREE.TextureLoader().load(svgBase64);
+
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(1, 1);
+          texture.needsUpdate = true;
+
+          return texture;
         }
+
         texturePlane.material.depthTest = false;
         texturePlane.material.depthWrite = false;
 
@@ -213,8 +217,7 @@ export function CardModelScene() {
         creditCard.add(texturePlane); // Moves with the card
         texturePlane.renderOrder = 500; // Below text (1000) but above card
 
-        // ---- Textdel ----
-        // Skapa en canvas för kortnamn
+        // ---- Text ----
         const nameCanvas: HTMLCanvasElement = document.createElement("canvas");
         nameCanvas.width = 512;
         nameCanvas.height = 128;
@@ -317,7 +320,7 @@ export function CardModelScene() {
         updateNumberText(cardData.cardNumber);
         setUpdateNumberFunction(() => updateNumberText);
         setChangeCreditCardTextureFunction(() => changeCreditCardTexture);
-        setcreatePatternTextureFunction(() => createPatternTexture)
+        setcreatePatternTextureFunction(() => createPatternTexture);
       },
       function (progress) {
         console.log("Loading progress:", progress);
@@ -353,7 +356,7 @@ export function CardModelScene() {
       changeCreditCardTextureFunction(cardData.colorChoice);
     }
     if (createPatternTextureFunction) {
-      createPatternTextureFunction(cardData.patternChoice)
+      createPatternTextureFunction(cardData.patternChoice);
     }
 
     if (cardData.colorChoice) {
@@ -367,7 +370,7 @@ export function CardModelScene() {
     changeCreditCardTextureFunction,
     cardData.colorChoice,
     cardData.patternChoice,
-    createPatternTextureFunction
+    createPatternTextureFunction,
   ]);
 
   return <div ref={mountRef} className={styles.cardModelScene} />;
