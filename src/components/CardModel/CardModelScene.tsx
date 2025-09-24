@@ -28,6 +28,8 @@ export function CardModelScene() {
   >(null);
   const [changeCreditCardTextureFunction, setChangeCreditCardTextureFunction] =
     useState<((text: string) => void) | null>(null);
+  const [createPatternTextureFunction, setcreatePatternTextureFunction] =
+    useState<((text: string) => void) | null>(null);
 
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -99,14 +101,18 @@ export function CardModelScene() {
         function changeCreditCardTexture(
           textureKey: keyof typeof availableTextures
         ) {
-
           gltf.scene.traverse((child: THREE.Object3D) => {
             if (child instanceof THREE.Mesh) {
               const mesh = child as THREE.Mesh;
               const material = mesh.material as THREE.MeshPhysicalMaterial;
 
+              if (material.name === "02___Default") {
+                mesh.renderOrder = 750;
+              }
+
               if (material.name === "01_Image") {
                 const texturePath = availableTextures[textureKey];
+                mesh.renderOrder = 0;
 
                 textureLoader.load(
                   texturePath,
@@ -123,7 +129,6 @@ export function CardModelScene() {
                     // Apply the corrected texture to the material
                     material.map = newTexture;
                     material.needsUpdate = true;
-
                   },
                   undefined,
                   (error) => {
@@ -137,6 +142,76 @@ export function CardModelScene() {
             }
           });
         }
+
+        //Pattern change
+
+        const patternTexture = createPatternTexture(cardData.patternChoice);
+        const textureMaterial = new THREE.MeshStandardMaterial({
+          map: patternTexture,
+          transparent: true,
+        });
+
+        const texturePlane = new THREE.Mesh(
+          new THREE.PlaneGeometry(size.x, size.z),
+          textureMaterial
+        );
+        // Function to create pattern textures
+        function createPatternTexture(pattern: string): THREE.CanvasTexture {
+          const patternCanvas = document.createElement("canvas");
+          patternCanvas.width = 512;
+          patternCanvas.height = 320;
+          const patternCtx = patternCanvas.getContext("2d");
+
+          if (!patternCtx) return new THREE.CanvasTexture(patternCanvas);
+
+          // Fill with base color
+          // patternCtx.fillStyle = `#${cardData.colorChoice
+          //   .toString(16)
+          //   .padStart(6, "0")}`;
+          // patternCtx.fillRect(0, 0, patternCanvas.width, patternCanvas.height);
+
+          if (pattern === "squares") {
+            patternCtx.fillStyle = "rgba(0, 0, 0, 0.3)";
+            for (let x = 40; x < patternCanvas.width; x += 40) {
+              for (let y = 40; y < patternCanvas.height; y += 40) {
+                patternCtx.fillRect(x - 10, y - 10, 20, 20);
+              }
+            }
+          } else if (pattern === "circles") {
+            patternCtx.fillStyle = "rgba(0, 0, 0, 0.3)";
+            for (let x = 35; x < patternCanvas.width; x += 35) {
+              for (let y = 35; y < patternCanvas.height; y += 35) {
+                patternCtx.beginPath();
+                patternCtx.arc(x, y, 12, 0, Math.PI * 2);
+                patternCtx.fill();
+              }
+            }
+          } else if (pattern === "stripes") {
+            patternCtx.strokeStyle = "rgba(0, 0, 0, 0.4)";
+            patternCtx.lineWidth = 3;
+            for (let y = 25; y < patternCanvas.height; y += 25) {
+              patternCtx.beginPath();
+              patternCtx.moveTo(0, y);
+              patternCtx.lineTo(patternCanvas.width, y);
+              patternCtx.stroke();
+            }
+            for (let x = 25; x < patternCanvas.width; x += 25) {
+              patternCtx.beginPath();
+              patternCtx.moveTo(x, 0);
+              patternCtx.lineTo(x, patternCanvas.height);
+              patternCtx.stroke();
+            }
+          }
+
+          return new THREE.CanvasTexture(patternCanvas);
+        }
+        texturePlane.material.depthTest = false;
+        texturePlane.material.depthWrite = false;
+
+        texturePlane.position.set(0, 0.2, 0); // Middle of your range
+        texturePlane.rotation.x = -Math.PI / 2; // Match the card's rotation
+        creditCard.add(texturePlane); // Moves with the card
+        texturePlane.renderOrder = 500; // Below text (1000) but above card
 
         // ---- Textdel ----
         // Skapa en canvas för kortnamn
@@ -242,6 +317,7 @@ export function CardModelScene() {
         updateNumberText(cardData.cardNumber);
         setUpdateNumberFunction(() => updateNumberText);
         setChangeCreditCardTextureFunction(() => changeCreditCardTexture);
+        setcreatePatternTextureFunction(() => createPatternTexture)
       },
       function (progress) {
         console.log("Loading progress:", progress);
@@ -252,7 +328,6 @@ export function CardModelScene() {
     );
 
     function animate() {
-
       renderer.render(scene, camera);
     }
 
@@ -265,7 +340,7 @@ export function CardModelScene() {
       }
       renderer.dispose(); // Clean up renderer
     };
-  }, []);
+  }, [cardData.patternChoice]);
 
   useEffect(() => {
     if (updateNameFunction) {
@@ -276,6 +351,9 @@ export function CardModelScene() {
     }
     if (changeCreditCardTextureFunction) {
       changeCreditCardTextureFunction(cardData.colorChoice);
+    }
+    if (createPatternTextureFunction) {
+      createPatternTextureFunction(cardData.patternChoice)
     }
 
     if (cardData.colorChoice) {
@@ -288,6 +366,8 @@ export function CardModelScene() {
     updateNumberFunction,
     changeCreditCardTextureFunction,
     cardData.colorChoice,
+    cardData.patternChoice,
+    createPatternTextureFunction
   ]);
 
   return <div ref={mountRef} className={styles.cardModelScene} />;
