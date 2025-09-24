@@ -68,6 +68,15 @@ export function CardModelScene() {
     camera.position.set(0, 0, 4);
     camera.lookAt(0, 0, 0);
 
+    controls.enableZoom = false;
+
+    const deltaVertical = Math.PI / 18;
+    controls.minPolarAngle = Math.PI / 2 - deltaVertical;
+    controls.maxPolarAngle = Math.PI / 2 + deltaVertical;
+
+    controls.minAzimuthAngle = -Math.PI / 18;
+    controls.maxAzimuthAngle = Math.PI / 18;
+
     controls.update();
 
     // Create our texture loader instance
