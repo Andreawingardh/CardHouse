@@ -16,6 +16,10 @@ export default function CustomizationPanel() {
     patternChoice: "clear",
     cardName: "",
     cardNumber: "",
+    inputFieldErrorMessages: {
+      cardName: "",
+      cardNumber: "",
+    },
   };
 
   return (
