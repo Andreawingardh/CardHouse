@@ -30,3 +30,12 @@
   aspect-ratio: 177 / 115;
   border-radius: 0.9375rem;
 }
+
+.cardModel .errorMessage {
+  color: red;
+  border: 1px solid red;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 1rem;
+  margin-top: 1rem;
+}
