@@ -8,7 +8,7 @@ export default function ColorChoiceButtons() {
   const { cardData, setCardData } = useCardData();
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} role="group" aria-label="Color choices">
       {colors.map((color) => (
         <div
           key={color}
