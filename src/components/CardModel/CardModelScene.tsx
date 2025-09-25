@@ -6,7 +6,7 @@ import styles from "./CardModel.module.css";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 interface CardModelSceneProps {
-  setErrorMessage: (text: string) => void
+  setErrorMessage: (text: string) => void;
 }
 
 export const availableTextures = {
@@ -22,7 +22,7 @@ export const availableTextures = {
 
 export type TextureKey = keyof typeof availableTextures;
 
-export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
+export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
   const { cardData } = useCardData();
   const [updateNameFunction, setUpdateNameFunction] = useState<
     ((text: string) => void) | null
@@ -31,8 +31,6 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
     ((text: string) => void) | null
   >(null);
   const [changeCreditCardTextureFunction, setChangeCreditCardTextureFunction] =
-    useState<((text: string) => void) | null>(null);
-  const [createPatternTextureFunction, setcreatePatternTextureFunction] =
     useState<((text: string) => void) | null>(null);
 
   const mountRef = useRef<HTMLDivElement>(null);
@@ -65,7 +63,7 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
     const ambientLight = new THREE.AmbientLight(0x404040, 1); // Soft ambient light
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 4);
     directionalLight.position.set(0, 0, 4);
     scene.add(directionalLight);
 
@@ -158,12 +156,12 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
 
         //Pattern change
         const patternTexture = createPatternTexture(cardData.patternChoice);
-        const textureMaterial = new THREE.MeshStandardMaterial({
+        const textureMaterial = new THREE.MeshPhysicalMaterial({
           map: patternTexture,
           transparent: true,
         });
 
-        const texturePlane = new THREE.Mesh(
+        const patternPlane = new THREE.Mesh(
           new THREE.PlaneGeometry(size.x, size.z),
           textureMaterial
         );
@@ -180,7 +178,7 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
               svgString = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 39" width="512" height="320">
           <rect x="35.5" y="5.7" width="11" height="11" transform="rotate(45 35.5 5.7)" stroke="${stroke}" fill="none"/>
-          <rect x="10.3" y="18.7" width="6.4" height="6.4" transform="rotate(24.5 10.3 18.7)" stroke="${stroke}" fill="none"/>
+          <rect x="10.3" y="12.7" width="6.4" height="6.4" transform="rotate(24.5 10.3 18.7)" stroke="${stroke}" fill="none"/>
           <rect x="20.6" y="29.1" width="4.1" height="4.1" transform="rotate(-20.3 23.6 29.1)" stroke="${stroke}" fill="none"/>
         </svg>
       `;
@@ -189,9 +187,9 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
             case "stripes":
               svgString = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 39" width="512" height="320">
-          <rect x="2" y="13" width="45" height="2" fill="${fill}" />
-          <rect x="2" y="18" width="34" height="2" fill="${fill}" />
-          <rect x="2" y="23" width="24" height="2" fill="${fill}" />
+          <rect x="2" y="10" width="45" height="2" fill="${fill}" />
+          <rect x="2" y="15" width="34" height="2" fill="${fill}" />
+          <rect x="2" y="20" width="24" height="2" fill="${fill}" />
         </svg>
       `;
               break;
@@ -199,12 +197,12 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
             case "circles":
               svgString = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 39" width="512" height="320">
-          <circle cx="7.5" cy="31.5" r="2.5" fill="${fill}" />
+          <circle cx="7.5" cy="10.5" r="2.5" fill="${fill}" />
           <circle cx="41.5" cy="6.5" r="2.5" fill="${fill}" />
-          <circle cx="10" cy="24" r="2" fill="${fill}" />
+          <circle cx="10" cy="20" r="2" fill="${fill}" />
           <circle cx="33" cy="8" r="2" fill="${fill}" />
           <circle cx="42" cy="14" r="2" fill="${fill}" />
-          <circle cx="16.5" cy="26.5" r="1.5" fill="${fill}" />
+          <circle cx="16.5" cy="15.5" r="1.5" fill="${fill}" />
           <circle cx="36.5" cy="17.5" r="1.5" fill="${fill}" />
         </svg>
       `;
@@ -226,13 +224,13 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
           return texture;
         }
 
-        texturePlane.material.depthTest = false;
-        texturePlane.material.depthWrite = false;
+        patternPlane.material.depthTest = false;
+        patternPlane.material.depthWrite = false;
 
-        texturePlane.position.set(0, 0.2, 0); // Middle of your range
-        texturePlane.rotation.x = -Math.PI / 2; // Match the card's rotation
-        creditCard.add(texturePlane); // Moves with the card
-        texturePlane.renderOrder = 500; // Below text (1000) but above card
+        patternPlane.position.set(0, 0.2, 0);
+        patternPlane.rotation.x = -Math.PI / 2;
+        creditCard.add(patternPlane);
+        patternPlane.renderOrder = 500;
 
         // ---- Text ----
         const nameCanvas: HTMLCanvasElement = document.createElement("canvas");
@@ -240,33 +238,51 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
         nameCanvas.height = 128;
         const nameCtx = nameCanvas.getContext("2d");
 
+        // ---- BumpText ----
+        const nameBumpCanvas: HTMLCanvasElement =
+          document.createElement("canvas");
+        nameBumpCanvas.width = 512;
+        nameBumpCanvas.height = 128;
+        const nameBumpCtx = nameBumpCanvas.getContext("2d");
+        const nameBumpTexture = new THREE.CanvasTexture(nameBumpCanvas);
+
         if (!nameCtx) {
+          setErrorMessage("Could not get 2D context from name canvas");
           setErrorMessage("Could not get 2D context from name canvas");
           return;
         }
 
-        // Skapa en canvas för kortnummer
+        // Creating a number plane
         const numberCanvas: HTMLCanvasElement =
           document.createElement("canvas");
         numberCanvas.width = 512;
         numberCanvas.height = 128;
         const numberCtx = numberCanvas.getContext("2d");
 
+        const numberBumpCanvas: HTMLCanvasElement =
+          document.createElement("canvas");
+        numberBumpCanvas.width = 512;
+        numberBumpCanvas.height = 128;
+        const numberBumpCtx = numberBumpCanvas.getContext("2d");
+        const numberBumpTexture = new THREE.CanvasTexture(numberBumpCanvas);
+
         if (!numberCtx) {
+          setErrorMessage("Could not get 2D context from number canvas");
           setErrorMessage("Could not get 2D context from number canvas");
           return;
         }
 
         // Funktion för att uppdatera kortnamn
         function updateNameText(newText: string): void {
-          if (!nameCtx) {
+          if (!nameCtx || !nameBumpCtx) {
             return;
           }
 
           nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
           // White text
+
           nameCtx.fillStyle = "white";
-          nameCtx.font = "32px Arial";
+          nameCtx.font = '32px "Arial", monospace';
           nameCtx.textAlign = "center";
           nameCtx.textBaseline = "middle";
           nameCtx.fillText(
@@ -274,12 +290,29 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
             nameCanvas.width / 2,
             nameCanvas.height / 2
           );
+          nameBumpCtx.fillStyle = "black";
+          nameBumpCtx.fillRect(
+            0,
+            0,
+            nameBumpCanvas.width,
+            nameBumpCanvas.height
+          );
+          nameBumpCtx.fillStyle = "white";
+          nameBumpCtx.font = '32px "Arial", monospace';
+          nameBumpCtx.textAlign = "center";
+          nameBumpCtx.textBaseline = "middle";
+          nameBumpCtx.fillText(
+            newText,
+            nameCanvas.width / 2,
+            nameCanvas.height / 2
+          );
           nameTexture.needsUpdate = true;
+          nameBumpTexture.needsUpdate = true;
         }
 
         // Funktion för att uppdatera kortnummer
         function updateNumberText(newText: string): void {
-          if (!numberCtx) {
+          if (!numberCtx || !numberBumpCtx) {
             return;
           }
 
@@ -289,19 +322,39 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
           numberCtx.font = "28px monospace"; // Monospace för bättre nummervisning
           numberCtx.textAlign = "left";
           numberCtx.fillText(newText, 20, 70);
+
+          numberBumpCtx.fillStyle = "black";
+          numberBumpCtx.fillRect(
+            0,
+            0,
+            numberBumpCanvas.width,
+            numberBumpCanvas.height
+          );
+
+          numberBumpCtx.fillStyle = "white";
+          numberBumpCtx.font = "28px monospace"; // Monospace för bättre nummervisning
+          numberBumpCtx.textAlign = "left";
+          numberBumpCtx.fillText(newText, 20, 70);
+
+          numberBumpTexture.needsUpdate = true;
+
           numberTexture.needsUpdate = true;
         }
 
-        // Skapa texturer från canvas
+        // Create name and number texture and material
         const nameTexture = new THREE.CanvasTexture(nameCanvas);
-        const nameMaterial = new THREE.MeshBasicMaterial({
+        const nameMaterial = new THREE.MeshPhysicalMaterial({
           map: nameTexture,
+          bumpMap: nameBumpTexture,
+          bumpScale: -4,
           transparent: true,
         });
 
         const numberTexture = new THREE.CanvasTexture(numberCanvas);
-        const numberMaterial = new THREE.MeshBasicMaterial({
+        const numberMaterial = new THREE.MeshPhysicalMaterial({
           map: numberTexture,
+          bumpMap: numberBumpTexture,
+          bumpScale: -4,
           transparent: true,
         });
 
@@ -329,18 +382,18 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
 
         numberPlane.position.set(-11, 0.4, 7);
 
-        // Starta med standardtext
+        //Functions to populate with data
         updateNameText(cardData.cardName);
         setUpdateNameFunction(() => updateNameText);
         updateNumberText(cardData.cardNumber);
         setUpdateNumberFunction(() => updateNumberText);
         setChangeCreditCardTextureFunction(() => changeCreditCardTexture);
-        setcreatePatternTextureFunction(() => createPatternTexture);
       },
       function (progress) {
         console.log("Loading progress:", progress);
       },
       function (error) {
+        console.error(`Error loading GLTF:, ${(error as Error).message}`);
         console.error(`Error loading GLTF:, ${(error as Error).message}`);
       }
     );
@@ -370,13 +423,6 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
     if (changeCreditCardTextureFunction) {
       changeCreditCardTextureFunction(cardData.colorChoice);
     }
-    if (createPatternTextureFunction) {
-      createPatternTextureFunction(cardData.patternChoice);
-    }
-
-    if (cardData.colorChoice) {
-      // changeCreditCardTexture(cardData.colorChoice)
-    }
   }, [
     cardData.cardName,
     updateNameFunction,
@@ -385,7 +431,6 @@ export function CardModelScene({setErrorMessage}: CardModelSceneProps) {
     changeCreditCardTextureFunction,
     cardData.colorChoice,
     cardData.patternChoice,
-    createPatternTextureFunction,
   ]);
 
   return <div ref={mountRef} className={styles.cardModelScene} />;
