@@ -12,7 +12,7 @@ A modern, interactive web application for designing custom credit cards with rea
   - Blue
   - Green
   - Orange
-  - Red
+  - Magenta
   - Metal
 - **Pattern Selection** - Apply different patterns to your card:
   - Clear (no pattern)
