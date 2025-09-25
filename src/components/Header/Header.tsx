@@ -2,7 +2,7 @@ import styles from "./Header.module.css";
 
 export default function Header() {
   return (
-    <div className={styles.headerNavContainer}>
+    <header className={styles.headerNavContainer}>
       <div className={styles.headerLogo}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -10,6 +10,7 @@ export default function Header() {
           height="31"
           viewBox="0 0 31 31"
           fill="none"
+          aria-hidden="true"
         >
           <rect width="31" height="31" rx="8" fill="url(#paint0_linear_12_4)" />
           <rect x="6" y="10" width="19" height="11" rx="2" fill="white" />
@@ -30,10 +31,16 @@ export default function Header() {
         <h3>Card House</h3>
       </div>
       <nav className={styles.headerNav}>
-        <a className={styles.link}>Cards</a>
-        <a className={styles.link}>Rewards</a>
-        <a className={styles.link}>Support</a>
+        <a href="#" className={styles.link}>
+          Cards
+        </a>
+        <a href="#" className={styles.link}>
+          Rewards
+        </a>
+        <a href="#" className={styles.link}>
+          Support
+        </a>
       </nav>
-    </div>
+    </header>
   );
 }
