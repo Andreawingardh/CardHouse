@@ -87,13 +87,15 @@ export default function InputField({
 
   return (
     <div className={styles.inputFieldContainer}>
-      <label>{label}</label>
+      <label htmlFor={fieldType}>{label}</label>
       <input
+        id={fieldType}
         name={label}
         className={styles.inputField}
         type="text"
         value={value}
         onChange={handleInputChange}
+        aria-describedby={errorMessage ? `${fieldType}-error` : undefined}
       />
       <p>
         {fieldType === "cardNumber"
@@ -102,7 +104,7 @@ export default function InputField({
         / {maxLength} {text}
       </p>
       <div className={styles.errorMessages}>
-        {errorMessage && <p>{errorMessage}</p>}
+        {errorMessage && <p id={`${fieldType}-error`}>{errorMessage}</p>}
       </div>
     </div>
   );
