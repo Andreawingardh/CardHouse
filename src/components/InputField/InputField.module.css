@@ -22,7 +22,7 @@
 
 .inputFieldContainer label {
   color: var(--font-color-grey);
-  font-family: "SF Pro";
+  font-family: "SF Pro", Arial, Helvetica, sans-serif;
   font-size: var(--font-size-m);
   font-style: normal;
   font-weight: 510;
@@ -32,9 +32,13 @@
 
 .inputFieldContainer p {
   color: var(--font-color-grey);
-  font-family: "SF Pro";
+  font-family: "SF Pro", Arial, Helvetica, sans-serif;
   font-size: var(--font-size-s);
   font-style: normal;
   font-weight: 510;
   line-height: normal;
+}
+
+.errorMessages {
+  height: 0.75rem;
 }

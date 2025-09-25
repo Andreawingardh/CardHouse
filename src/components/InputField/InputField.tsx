@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "./InputField.module.css";
 import { useCardData } from "../../context/CardDataContext";
 
@@ -16,7 +15,20 @@ export default function InputField({
   fieldType,
 }: InputFieldProps) {
   const { cardData, setCardData } = useCardData();
-  const [errorMessage, setErrorMessage] = useState("");
+  const errorMessage =
+    fieldType === "name"
+      ? cardData.inputFieldErrorMessages.cardName
+      : cardData.inputFieldErrorMessages.cardNumber;
+
+  const setErrorMessage = (message: string) => {
+    setCardData({
+      ...cardData,
+      inputFieldErrorMessages: {
+        ...cardData.inputFieldErrorMessages,
+        [fieldType === "name" ? "cardName" : "cardNumber"]: message,
+      },
+    });
+  };
 
   const value = fieldType === "name" ? cardData.cardName : cardData.cardNumber;
 
@@ -89,7 +101,9 @@ export default function InputField({
           : value.length}{" "}
         / {maxLength} {text}
       </p>
-      {errorMessage && <p>{errorMessage}</p>}
+      <div className={styles.errorMessages}>
+        {errorMessage && <p>{errorMessage}</p>}
+      </div>
     </div>
   );
 }

@@ -16,10 +16,19 @@ export default function CustomizationPanel() {
     patternChoice: "clear",
     cardName: "",
     cardNumber: "",
+    inputFieldErrorMessages: {
+      cardName: "",
+      cardNumber: "",
+    },
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Placeholder for future logic handling form submission
   };
 
   return (
-    <div className={styles.wrapper}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.customizationOptions}>
         <div className={styles.color}>
           <h3 className={styles.header}>Color</h3>
@@ -50,12 +59,12 @@ export default function CustomizationPanel() {
         <ActionButton color={"dark"} onClick={() => setCardData(initialValues)}>
           Reset
         </ActionButton>
-        <ActionButton>Apply for card</ActionButton>
+        <ActionButton type="submit">Apply for card</ActionButton>
       </div>
       <TextContainer
         paragraphOne="Terms and conditions may apply."
         paragraphTwo="Excessive use may cause you to become impoverished. "
       />
-    </div>
+    </form>
   );
 }
