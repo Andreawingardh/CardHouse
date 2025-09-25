@@ -4,7 +4,6 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { useCardData } from "../../context/CardDataContext";
 import styles from "./CardModel.module.css";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
-import { transformedClearcoatNormalView } from "three/src/nodes/TSL.js";
 
 interface CardModelSceneProps {
   setErrorMessage: (text: string) => void;
