@@ -4,6 +4,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { useCardData } from "../../context/CardDataContext";
 import styles from "./CardModel.module.css";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { transformedClearcoatNormalView } from "three/src/nodes/TSL.js";
 
 interface CardModelSceneProps {
   setErrorMessage: (text: string) => void;
@@ -49,66 +50,65 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
       1000
     );
     const renderer = new THREE.WebGLRenderer({
-      alpha: true, // Enable transparency
+      alpha: true,
     });
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    renderer.setClearColor(0x000000, 0); // Set clear color with 0 alpha (fully transparent)
+
+    renderer.setClearColor(0x000000, 0);
     renderer.setSize(containerWidth, containerHeight);
     mountRef.current.appendChild(renderer.domElement);
 
     let creditCard: THREE.Group | null = null;
 
-    // Improve lighting
-    const ambientLight = new THREE.AmbientLight(0x404040, 1); // Soft ambient light
+    //Lighting
+    const ambientLight = new THREE.AmbientLight(0x404040, 1);
     scene.add(ambientLight);
-
     const directionalLight = new THREE.DirectionalLight(0xffffff, 4);
     directionalLight.position.set(0, 0, 4);
     scene.add(directionalLight);
 
+    //Camera position
     camera.position.set(0, 0, 4);
     camera.lookAt(0, 0, 0);
 
+    //Orbit controls
     controls.enableZoom = false;
-
     const deltaVertical = Math.PI / 18;
     controls.minPolarAngle = Math.PI / 2 - deltaVertical;
     controls.maxPolarAngle = Math.PI / 2 + deltaVertical;
-
     controls.minAzimuthAngle = -Math.PI / 18;
     controls.maxAzimuthAngle = Math.PI / 18;
-
     controls.update();
 
-    // Create our texture loader instance
+    //Loaders
     const textureLoader = new THREE.TextureLoader();
-
     const gltfLoader = new GLTFLoader();
+
     gltfLoader.load(
       "/assets/model/credit_card_model/credit_card.gltf",
       function (gltf) {
         creditCard = gltf.scene;
 
-        // Get bounding box
+        //Bounding box
         const box = new THREE.Box3().setFromObject(creditCard);
         const size = box.getSize(new THREE.Vector3());
         const center = box.getCenter(new THREE.Vector3());
 
-        // Scale to reasonable size
+        // Scale card
         const maxSize = Math.max(size.x, size.y, size.z);
-        const scale = 7 / maxSize; // Adjust target size as needed
+        const scale = 7 / maxSize;
         creditCard.scale.setScalar(scale);
 
         // Center the model
         creditCard.position.sub(center.multiplyScalar(scale));
 
-        // // Fix orientation
+        // Fix orientation
         creditCard.rotation.x = Math.PI / 2;
 
         scene.add(creditCard);
 
-        //Color change
+        // --- (Color) Texture ---
         function changeCreditCardTexture(
           textureKey: keyof typeof availableTextures
         ) {
@@ -117,27 +117,18 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
               const mesh = child as THREE.Mesh;
               const material = mesh.material as THREE.MeshPhysicalMaterial;
 
-              if (material.name === "02___Default") {
-                mesh.renderOrder = 750;
-              }
-
               if (material.name === "01_Image") {
                 const texturePath = availableTextures[textureKey];
-                mesh.renderOrder = 0;
 
                 textureLoader.load(
                   texturePath,
                   (newTexture) => {
-                    // This is where we fix the orientation issues
-
                     newTexture.flipY = false;
                     newTexture.repeat.set(1, 1);
 
-                    // // Set the texture wrapping mode to allow negative repeat values
                     newTexture.wrapS = THREE.RepeatWrapping;
                     newTexture.wrapT = THREE.RepeatWrapping;
 
-                    // Apply the corrected texture to the material
                     material.map = newTexture;
                     material.needsUpdate = true;
                   },
@@ -154,19 +145,18 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
           });
         }
 
-        //Pattern change
+        // ---- Pattern ----
         const patternTexture = createPatternTexture(cardData.patternChoice);
-        const textureMaterial = new THREE.MeshPhysicalMaterial({
+        const patternMaterial = new THREE.MeshPhysicalMaterial({
           map: patternTexture,
           transparent: true,
         });
 
         const patternPlane = new THREE.Mesh(
           new THREE.PlaneGeometry(size.x, size.z),
-          textureMaterial
+          patternMaterial
         );
 
-        // Function to create pattern textures as SVG
         function createPatternTexture(pattern: string): THREE.Texture {
           let svgString = "";
           const opacity = 0.4; // Adjust opacity between 0 and 1
@@ -219,7 +209,6 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
           texture.wrapS = THREE.RepeatWrapping;
           texture.wrapT = THREE.RepeatWrapping;
           texture.repeat.set(1, 1);
-          texture.needsUpdate = true;
 
           return texture;
         }
@@ -230,64 +219,39 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
         patternPlane.position.set(0, 0.2, 0);
         patternPlane.rotation.x = -Math.PI / 2;
         creditCard.add(patternPlane);
-        patternPlane.renderOrder = 500;
 
-        // ---- Text ----
+        // ---- Name ----
         const nameCanvas: HTMLCanvasElement = document.createElement("canvas");
-        nameCanvas.width = 512;
+        nameCanvas.width = 768;
         nameCanvas.height = 128;
         const nameCtx = nameCanvas.getContext("2d");
 
-        // ---- BumpText ----
+        // bumpMap for Name
         const nameBumpCanvas: HTMLCanvasElement =
           document.createElement("canvas");
-        nameBumpCanvas.width = 512;
+        nameBumpCanvas.width = 768;
         nameBumpCanvas.height = 128;
         const nameBumpCtx = nameBumpCanvas.getContext("2d");
-        const nameBumpTexture = new THREE.CanvasTexture(nameBumpCanvas);
 
-        if (!nameCtx) {
-          setErrorMessage("Could not get 2D context from name canvas");
+        if (!nameCtx || !nameBumpCanvas) {
           setErrorMessage("Could not get 2D context from name canvas");
           return;
         }
 
-        // Creating a number plane
-        const numberCanvas: HTMLCanvasElement =
-          document.createElement("canvas");
-        numberCanvas.width = 512;
-        numberCanvas.height = 128;
-        const numberCtx = numberCanvas.getContext("2d");
-
-        const numberBumpCanvas: HTMLCanvasElement =
-          document.createElement("canvas");
-        numberBumpCanvas.width = 512;
-        numberBumpCanvas.height = 128;
-        const numberBumpCtx = numberBumpCanvas.getContext("2d");
-        const numberBumpTexture = new THREE.CanvasTexture(numberBumpCanvas);
-
-        if (!numberCtx) {
-          setErrorMessage("Could not get 2D context from number canvas");
-          setErrorMessage("Could not get 2D context from number canvas");
-          return;
-        }
-
-        // Funktion för att uppdatera kortnamn
         function updateNameText(newText: string): void {
           if (!nameCtx || !nameBumpCtx) {
             return;
           }
 
           nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
-          // White text
 
           nameCtx.fillStyle = "white";
           nameCtx.font = '32px "Arial", monospace';
-          nameCtx.textAlign = "center";
-          nameCtx.textBaseline = "middle";
+          nameCtx.textAlign = "left";
+          // nameCtx.textBaseline = "middle";
           nameCtx.fillText(
-            newText,
-            nameCanvas.width / 2,
+            newText.toUpperCase(),
+            20, // Change from nameCanvas.width / 2 to 20
             nameCanvas.height / 2
           );
           nameBumpCtx.fillStyle = "black";
@@ -299,18 +263,57 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
           );
           nameBumpCtx.fillStyle = "white";
           nameBumpCtx.font = '32px "Arial", monospace';
-          nameBumpCtx.textAlign = "center";
-          nameBumpCtx.textBaseline = "middle";
+          nameBumpCtx.textAlign = "left";
+          // nameBumpCtx.textBaseline = "middle";
           nameBumpCtx.fillText(
-            newText,
-            nameCanvas.width / 2,
+            newText.toUpperCase(),
+            20, // Change from nameCanvas.width / 2 to 20
             nameCanvas.height / 2
           );
           nameTexture.needsUpdate = true;
           nameBumpTexture.needsUpdate = true;
         }
 
-        // Funktion för att uppdatera kortnummer
+        const nameBumpTexture = new THREE.CanvasTexture(nameBumpCanvas);
+        const nameTexture = new THREE.CanvasTexture(nameCanvas);
+        const nameMaterial = new THREE.MeshPhysicalMaterial({
+          map: nameTexture,
+          bumpMap: nameBumpTexture,
+          bumpScale: -4,
+          transparent: true,
+        });
+
+        const namePlane = new THREE.Mesh(
+          new THREE.PlaneGeometry(80, 12),
+          nameMaterial
+        );
+        namePlane.rotation.x = -Math.PI / 2; // Counter-rotate to face forward
+        creditCard.add(namePlane);
+        namePlane.renderOrder = 1000;
+        namePlane.material.depthTest = false;
+        namePlane.material.depthWrite = false;
+
+        namePlane.position.set(1, 0.4, 23);
+
+        // ---- Card number ----
+        // Creating a number canvas
+        const numberCanvas: HTMLCanvasElement =
+          document.createElement("canvas");
+        numberCanvas.width = 768;
+        numberCanvas.height = 128;
+        const numberCtx = numberCanvas.getContext("2d");
+
+        // bumpMapCanvas for Number
+        const numberBumpCanvas: HTMLCanvasElement =
+          document.createElement("canvas");
+        numberBumpCanvas.width = 768;
+        numberBumpCanvas.height = 128;
+        const numberBumpCtx = numberBumpCanvas.getContext("2d");
+
+        if (!numberCtx || !numberBumpCtx) {
+          setErrorMessage("Could not get 2D context from number canvas");
+          return;
+        }
         function updateNumberText(newText: string): void {
           if (!numberCtx || !numberBumpCtx) {
             return;
@@ -319,9 +322,9 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
           numberCtx.clearRect(0, 0, numberCanvas.width, numberCanvas.height);
 
           numberCtx.fillStyle = "white";
-          numberCtx.font = "28px monospace"; // Monospace för bättre nummervisning
+          numberCtx.font = "bold 45px 'Courier New', monospace";
           numberCtx.textAlign = "left";
-          numberCtx.fillText(newText, 20, 70);
+          numberCtx.fillText(newText, 20, 80);
 
           numberBumpCtx.fillStyle = "black";
           numberBumpCtx.fillRect(
@@ -332,24 +335,15 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
           );
 
           numberBumpCtx.fillStyle = "white";
-          numberBumpCtx.font = "28px monospace"; // Monospace för bättre nummervisning
+          numberBumpCtx.font = "bold 45px 'Courier New', monospace"; // Monospace för bättre nummervisning
           numberBumpCtx.textAlign = "left";
-          numberBumpCtx.fillText(newText, 20, 70);
+          numberBumpCtx.fillText(newText, 20, 80);
 
           numberBumpTexture.needsUpdate = true;
-
           numberTexture.needsUpdate = true;
         }
 
-        // Create name and number texture and material
-        const nameTexture = new THREE.CanvasTexture(nameCanvas);
-        const nameMaterial = new THREE.MeshPhysicalMaterial({
-          map: nameTexture,
-          bumpMap: nameBumpTexture,
-          bumpScale: -4,
-          transparent: true,
-        });
-
+        const numberBumpTexture = new THREE.CanvasTexture(numberBumpCanvas);
         const numberTexture = new THREE.CanvasTexture(numberCanvas);
         const numberMaterial = new THREE.MeshPhysicalMaterial({
           map: numberTexture,
@@ -358,39 +352,26 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
           transparent: true,
         });
 
-        const namePlane = new THREE.Mesh(
-          new THREE.PlaneGeometry(50, 12),
-          nameMaterial
-        );
-        namePlane.rotation.x = -Math.PI / 2; // Counter-rotate to face forward
-        creditCard.add(namePlane);
-        namePlane.renderOrder = 1000;
-        namePlane.material.depthTest = false;
-        namePlane.material.depthWrite = false;
-
-        namePlane.position.set(-22, 0.4, 15);
-
         const numberPlane = new THREE.Mesh(
-          new THREE.PlaneGeometry(50, 12),
+          new THREE.PlaneGeometry(80, 12),
           numberMaterial
         );
+
         numberPlane.rotation.x = -Math.PI / 2; // Counter-rotate to face forward
         creditCard.add(numberPlane);
         numberPlane.renderOrder = 1000;
         numberPlane.material.depthTest = false;
         numberPlane.material.depthWrite = false;
+        numberPlane.position.set(1, 0.4, 7);
 
-        numberPlane.position.set(-11, 0.4, 7);
-
-        //Functions to populate with data
+        //Functions to populate model with data
         updateNameText(cardData.cardName);
         setUpdateNameFunction(() => updateNameText);
         updateNumberText(cardData.cardNumber);
         setUpdateNumberFunction(() => updateNumberText);
         setChangeCreditCardTextureFunction(() => changeCreditCardTexture);
       },
-      function (progress) {
-        console.log("Loading progress:", progress);
+      function (_progress) {
       },
       function (error) {
         console.error(`Error loading GLTF:, ${(error as Error).message}`);
@@ -399,6 +380,7 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
     );
 
     function animate() {
+          controls.update();
       renderer.render(scene, camera);
     }
 
