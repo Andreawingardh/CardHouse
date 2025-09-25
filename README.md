@@ -12,7 +12,7 @@ A modern, interactive web application for designing custom credit cards with rea
   - Blue
   - Green
   - Orange
-  - Red
+  - Magenta
   - Metal
 - **Pattern Selection** - Apply different patterns to your card:
   - Clear (no pattern)
@@ -27,18 +27,20 @@ A modern, interactive web application for designing custom credit cards with rea
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js
 - npm or yarn package manager
 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yourusername/card-house.git
 cd card-house
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 # or
@@ -46,13 +48,14 @@ yarn install
 ```
 
 3. Start the development server:
+
 ```bash
 npm run dev
 # or
 yarn dev
 ```
 
-4. Open your browser and navigate to `http://localhost:5173` (or the port shown in your terminal)
+4. Open your browser and navigate to the port shown in your terminal.
 
 ## 🛠️ Built With
 
@@ -68,7 +71,7 @@ yarn dev
 ```
 src/
 ├── components/
-│   ├── ActionButton/         # CTA buttons (Reset, Apply)
+│   ├── ActionButton/        # CTA buttons (Reset, Apply)
 │   ├── CardModel/           # 3D card rendering with Three.js
 │   ├── ColorChoiceButton/   # Individual color selection button
 │   ├── ColorChoiceButtons/  # Color selection container
@@ -79,39 +82,44 @@ src/
 │   ├── PatternChoiceButton/ # Individual pattern button
 │   ├── PatternChoiceButtons/# Pattern selection container
 │   ├── TextField/           # Info text display
-│   └── TextContainer/       # Terms and conditions text
+│   └── TextContainer/       # Reusable text container
 ├── context/
 │   └── CardDataContext.tsx  # Global state management
 ├── fonts/                   # SF Pro font files
 ├── App.tsx                  # Main app component
 ├── App.css                  # Global styles and variables
-└── index.css               # Base styles
+└── index.css                # Base styles
 ```
 
 ## 🎮 Usage
 
-1. **Select a Color**: Click on any of the color swatches in the Color section
-2. **Choose a Pattern**: Select from the available pattern options
-3. **Add Personalization**: 
-   - Enter your name (max 25 characters)
-   - Enter card number (max 16 digits, automatically formatted)
-4. **Preview**: View your customizations on the 3D card model
-5. **Reset**: Click the Reset button to clear all customizations
-6. **Apply**: Click "Apply for card" when satisfied with your design
+1. **Select a Color**: Click on any of the color swatches in the Color section.
+2. **Choose a Pattern**: Select from the available pattern options.
+3. **Add Personalization**:
+   - Enter your name (maximum 25 characters).
+   - Enter the card number (maximum 16 digits; formatting is applied automatically).
+4. **Preview**: View your customizations in real time on the 3D card model.
+5. **Reset**: Click the **Reset** button to clear all customizations.
+6. **Apply**: Click **"Apply for Card"** when you’re satisfied with your design.  
+   _(This button is included for demonstration purposes only and is currently non-functional.)_
 
 ## 🎨 Customization Options
 
 ### Colors
-The app includes 6 professionally designed gradient colors with custom border styling:
+
+The app includes 6 professionally designed gradient colors:
+
 - Each color uses a two-tone gradient effect
-- Metal option features a unique four-directional gradient
 
 ### Patterns
+
 Pattern overlays are rendered on top of the base color:
+
 - Patterns use semi-transparent overlays for subtle effect
 - Each pattern is SVG-based for crisp rendering
 
 ### 3D Model
+
 - Uses GLTF format for optimized loading
 - Includes orbit controls for interactive viewing
 - Real-time texture updates based on color selection
@@ -135,11 +143,10 @@ Pattern overlays are rendered on top of the base color:
 
 ## 📝 Input Validation
 
-- **Name Field**: 
+- **Name Field**:
   - Accepts letters and spaces only
   - Swedish characters (å, ä, ö) supported
   - Maximum 25 characters
-  
 - **Card Number Field**:
   - Accepts numbers only
   - Auto-formats with spaces every 4 digits
