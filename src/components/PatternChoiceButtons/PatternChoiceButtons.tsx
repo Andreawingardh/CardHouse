@@ -9,7 +9,11 @@ export default function PatternChoiceButtons() {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.buttonContainer}>
+      <div
+        className={styles.buttonContainer}
+        role="group"
+        aria-label="Pattern choices"
+      >
         {shapes.map((shape) => (
           <div
             key={shape}

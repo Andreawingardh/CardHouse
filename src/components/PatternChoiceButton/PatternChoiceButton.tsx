@@ -156,7 +156,11 @@ export default function PatternChoiceButton({
   };
 
   return (
-    <button className={styles.button} onClick={onClick}>
+    <button
+      className={styles.button}
+      onClick={onClick}
+      aria-label={`Choose ${shape} pattern`}
+    >
       {renderShape()}
     </button>
   );

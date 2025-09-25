@@ -15,6 +15,7 @@ export default function ColorChoiceButton({
     <button
       className={`${styles.button} ${styles[color]}`}
       onClick={onClick}
+      aria-label={`Choose ${color} color`}
     ></button>
   );
 }
