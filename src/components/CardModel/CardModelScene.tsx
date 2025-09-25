@@ -32,6 +32,9 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
   >(null);
   const [changeCreditCardTextureFunction, setChangeCreditCardTextureFunction] =
     useState<((text: string) => void) | null>(null);
+  const [updatePatternFunction, setUpdatePatternFunction] = useState<
+    ((pattern: string) => void) | null
+  >(null);
 
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -247,10 +250,9 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
           nameCtx.fillStyle = "white";
           nameCtx.font = '32px "Arial", monospace';
           nameCtx.textAlign = "left";
-          // nameCtx.textBaseline = "middle";
           nameCtx.fillText(
             newText.toUpperCase(),
-            20, // Change from nameCanvas.width / 2 to 20
+            20, 
             nameCanvas.height / 2
           );
           nameBumpCtx.fillStyle = "black";
@@ -263,10 +265,9 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
           nameBumpCtx.fillStyle = "white";
           nameBumpCtx.font = '32px "Arial", monospace';
           nameBumpCtx.textAlign = "left";
-          // nameBumpCtx.textBaseline = "middle";
           nameBumpCtx.fillText(
             newText.toUpperCase(),
-            20, // Change from nameCanvas.width / 2 to 20
+            20,
             nameCanvas.height / 2
           );
           nameTexture.needsUpdate = true;
@@ -286,7 +287,7 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
           new THREE.PlaneGeometry(80, 12),
           nameMaterial
         );
-        namePlane.rotation.x = -Math.PI / 2; // Counter-rotate to face forward
+        namePlane.rotation.x = -Math.PI / 2;
         creditCard.add(namePlane);
         namePlane.renderOrder = 1000;
         namePlane.material.depthTest = false;
@@ -334,7 +335,7 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
           );
 
           numberBumpCtx.fillStyle = "white";
-          numberBumpCtx.font = "bold 45px 'Courier New', monospace"; // Monospace för bättre nummervisning
+          numberBumpCtx.font = "bold 45px 'Courier New', monospace";
           numberBumpCtx.textAlign = "left";
           numberBumpCtx.fillText(newText, 20, 80);
 
@@ -356,7 +357,7 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
           numberMaterial
         );
 
-        numberPlane.rotation.x = -Math.PI / 2; // Counter-rotate to face forward
+        numberPlane.rotation.x = -Math.PI / 2;
         creditCard.add(numberPlane);
         numberPlane.renderOrder = 1000;
         numberPlane.material.depthTest = false;
@@ -364,14 +365,19 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
         numberPlane.position.set(1, 0.4, 7);
 
         //Functions to populate model with data
+        function updatePattern(newPattern: string) {
+          const newPatternTexture = createPatternTexture(newPattern);
+          patternMaterial.map = newPatternTexture;
+          patternMaterial.needsUpdate = true;
+        }
+        setUpdatePatternFunction(() => updatePattern);
         updateNameText(cardData.cardName);
         setUpdateNameFunction(() => updateNameText);
         updateNumberText(cardData.cardNumber);
         setUpdateNumberFunction(() => updateNumberText);
         setChangeCreditCardTextureFunction(() => changeCreditCardTexture);
       },
-      function (_progress) {
-      },
+      function (_progress) {},
       function (error) {
         console.error(`Error loading GLTF:, ${(error as Error).message}`);
         console.error(`Error loading GLTF:, ${(error as Error).message}`);
@@ -379,7 +385,7 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
     );
 
     function animate() {
-          controls.update();
+      controls.update();
       renderer.render(scene, camera);
     }
 
@@ -392,27 +398,28 @@ export function CardModelScene({ setErrorMessage }: CardModelSceneProps) {
       }
       renderer.dispose(); // Clean up renderer
     };
-  }, [cardData.patternChoice]);
+  }, []);
 
   useEffect(() => {
     if (updateNameFunction) {
       updateNameFunction(cardData.cardName);
     }
+  }, [cardData.cardName, updateNameFunction]);
+  useEffect(() => {
     if (updateNumberFunction) {
       updateNumberFunction(cardData.cardNumber);
     }
+  }, [cardData.cardNumber, updateNumberFunction]);
+  useEffect(() => {
     if (changeCreditCardTextureFunction) {
       changeCreditCardTextureFunction(cardData.colorChoice);
     }
-  }, [
-    cardData.cardName,
-    updateNameFunction,
-    cardData.cardNumber,
-    updateNumberFunction,
-    changeCreditCardTextureFunction,
-    cardData.colorChoice,
-    cardData.patternChoice,
-  ]);
+  }, [changeCreditCardTextureFunction, cardData.colorChoice]);
+  useEffect(() => {
+    if (updatePatternFunction) {
+      updatePatternFunction(cardData.patternChoice); // Add this
+    }
+  }, [cardData.patternChoice, updatePatternFunction]);
 
   return <div ref={mountRef} className={styles.cardModelScene} />;
 }
